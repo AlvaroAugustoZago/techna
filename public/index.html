@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Socket.io</title>
+</head>
+
+<body>
+
+    <input id="dbm" value="27"/> dbm <br>
+    <input id="port" value="//dev//ttyUSB0"/> Port <br>
+    <input id="seconds" value="0.50"/> Seconds <br>
+    <input id="bip" type="checkbox" value="true"> Bip <br>
+    
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
+    <button onclick="limpar()">Limpar</button>
+
+
+    <div class='scoreboard'></div>
+    
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
+
+    <!-- <script src="static/socket.io/client-dist/socket.io.js"></script> -->
+    <script>
+
+        const scoreDiv = document.querySelector("div.scoreboard")
+        let tableHeaders = ["Tag", "Antena", "Rssi", "Count"]
+        const createAntena1Table = () => {
+            while (scoreDiv.firstChild) scoreDiv.removeChild(scoreDiv.firstChild)
+            let scoreboardTable = document.createElement('table')
+            scoreboardTable.className = 'antena1Table'
+            let scoreboardTableHead = document.createElement('thead')
+            scoreboardTableHead.className = 'scoreboardTableHead'
+            let scoreboardTableHeaderRow = document.createElement('tr')
+            scoreboardTableHeaderRow.className = 'scoreboardTableHeaderRow'
+            tableHeaders.forEach(header => {
+                let scoreHeader = document.createElement('th')
+                scoreHeader.innerText = header
+                scoreboardTableHeaderRow.append(scoreHeader)
+            })
+            scoreboardTableHead.append(scoreboardTableHeaderRow) 
+            scoreboardTable.append(scoreboardTableHead)
+            let scoreboardTableBody = document.createElement('tbody')
+            scoreboardTableBody.className = "scoreboardTable-Body"
+            scoreboardTable.append(scoreboardTableBody)
+            scoreDiv.append(scoreboardTable)
+        }
+        
+        const appendAntena1 = (singleScore, singleScoreIndex) => {
+            const scoreboardTable = document.querySelector('.antena1Table')
+            let scoreboardTableBodyRow = document.createElement('tr') 
+            scoreboardTableBodyRow.className = 'scoreboardTableBodyRow'
+            
+            let usernameData = document.createElement('td')
+            usernameData.innerText = singleScore.tag
+            let scoreData = document.createElement('td')
+            scoreData.innerText = singleScore.antena
+            let timeData = document.createElement('td')
+            timeData.innerText = singleScore.rssi
+            let accuracyData = document.createElement('td')
+            accuracyData.innerText = singleScore.count
+            scoreboardTableBodyRow.append(usernameData, scoreData, timeData, accuracyData)
+            scoreboardTable.append(scoreboardTableBodyRow)
+        }
+
+        var socket = io("/view");
+
+        socket.on('exibTags', (data) => {
+            createAntena1Table()
+            data.forEach(appendAntena1)
+        });
+        createAntena1Table()
+        socket.on('exibTag', (tag) => {
+            
+            let oTable = document.querySelector('.antena1Table');
+            let data = [...oTable.rows].map(t => [...t.children].map(u => u.innerText)) 
+                    
+            const index = data.findIndex(row => row[0] === tag.tag && row[1] === tag.antena);
+            if (index === -1) appendAntena1(tag, data.length +1)
+            else{
+                const tds = [...[...oTable.rows][index].children]
+                tds[2].innerText = tag.rssi
+                tds[3].innerText = tag.count
+            }
+        });
+
+        socket.on('message', data => console.log(data))
+
+        function start() {
+            const dbm = document.getElementById('dbm').value
+            const port = document.getElementById('port').value
+            const seconds = document.getElementById('seconds').value
+            const bip = document.getElementById('bip').checked
+            socket.emit('start', [port, parseInt(dbm),  bip, parseFloat(seconds)])
+        }
+        function stop() {
+            socket.emit('stop')
+        }
+        
+        function limpar() { 
+            createAntena1Table()
+            socket.emit('limpar')
+        }
+    </script>
+</body>
+
+</html>
