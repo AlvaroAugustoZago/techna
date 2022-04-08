@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AntenaModule } from './antena/antena.module';
+import { DatabaseModule } from './db/database.module';
 
 @Module({
-    imports: [AntenaModule, CqrsModule],
-    controllers: [],
-    providers: [],
-    exports: [AntenaModule]
+  imports: [DatabaseModule, AntenaModule, CqrsModule],
+  exports: [DatabaseModule, AntenaModule],
 })
 export class InfraModule {}

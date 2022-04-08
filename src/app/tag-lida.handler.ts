@@ -1,6 +1,10 @@
+import { Inject } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { ViewGateway } from 'src/ui/events.gateway';
+import { Tag } from '../domain/tag';
+import { ViewGateway } from '../ui/events.gateway';
+import { Repository } from 'typeorm';
 import { TagLida } from './cmd/tag-lida.cmd';
+import { Optional } from 'typescript-optional';
 
 @EventsHandler(TagLida)
 export class TagLidaHandler implements IEventHandler<TagLida> {
@@ -12,24 +16,32 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     readTime: number;
   }> = [];
 
-  constructor(private readonly antenaGateway: ViewGateway) {}
+  constructor(
+    private readonly antenaGateway: ViewGateway,
+    @Inject('SERVICO_REPOSITORY')
+    private repository: Repository<Tag>,
+  ) {}
 
   async handle(command: TagLida) {
-    let tagObj;
-    const index = this.tags.findIndex(
-      (item) => item.antena === command.antena && item.tag === command.tag,
+    const tag: Tag = Tag.of(command.tag, command.readTime, command.antena);
+
+    const tagDb: Optional<Tag> = Optional.ofNullable(
+      await this.repository.findOne(command.tag),
     );
-    if (index === -1) {
-      this.tags.push(command);
-      tagObj = command;
-    } else {
-      this.tags[index].count = command.count;
-      this.tags[index].rssi = command.rssi;
-      this.tags[index].readTime = command.readTime;
 
-      tagObj = this.tags[index];
-    }
+    tagDb.ifPresentOrElse(
+      (tag: Tag) => {
+        tag.movimentar(command.readTime, command.antena);
+        this.repository.update(
+          ['antena1', 'antena2', 'antena3', 'antena4'],
+          tag,
+        );
+      },
+      () => {
+        this.repository.save(tag);
+      },
+    );
 
-    this.antenaGateway.server.emit('exibTag', tagObj);
+    this.antenaGateway.server.emit('exibTag', tag);
   }
 }
