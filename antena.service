@@ -1,0 +1,13 @@
+[Unit]
+Description=Techna Service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/antena-service
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+User=pi
+Environment=PORT=8000
+
+[Install]
+WantedBy=multi-user.target
