@@ -32,16 +32,13 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     tagDb.ifPresentOrElse(
       (tag: Tag) => {
         tag.movimentar(command.readTime, command.antena);
-        this.repository.update(
-          ['antena1', 'antena2', 'antena3', 'antena4'],
-          tag,
-        );
+        this.repository.save(tag);
       },
       () => {
         this.repository.save(tag);
       },
     );
 
-    this.antenaGateway.server.emit('exibTag', tag);
+    //this.antenaGateway.server.emit('exibTag', tag);
   }
 }

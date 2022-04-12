@@ -50,7 +50,7 @@ rssi_values = {}
 
 
 if __name__ == "__main__":    
-    sio = socketio.Client()
+    sio = socketio.Client() #logger=True, engineio_logger=True
     sio.connect('http://localhost:3000', namespaces=['/rfid'])
 
 @sio.on('connect', namespace='/rfid')

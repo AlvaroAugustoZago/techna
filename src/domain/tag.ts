@@ -5,26 +5,26 @@ export class Tag {
   @PrimaryColumn()
   epc: string;
 
-  @Column()
-  antena1: number;
+  @Column({default: 0, type: 'bigint'})
+  antena1: string;
 
-  @Column()
-  antena2: number;
+  @Column( {default: 0, type: 'bigint'})
+  antena2: string;
 
-  @Column()
-  antena3: number;
+  @Column( {default: 0, type: 'bigint'})
+  antena3: string;
 
-  @Column()
-  antena4: number;
+  @Column( {default: 0, type: 'bigint'})
+  antena4: string;
 
-  movimentar(horaLeitura: number, antena: number) {
+  movimentar(horaLeitura: string, antena: number) {
     if (antena === 1) this.antena1 = horaLeitura;
     if (antena === 2) this.antena2 = horaLeitura;
     if (antena === 3) this.antena3 = horaLeitura;
     if (antena === 4) this.antena4 = horaLeitura;
   }
 
-  public static of(epc: string, horaLeitura: number, antena: number): Tag {
+  public static of(epc: string, horaLeitura: string, antena: number): Tag {
     const tag: Tag = new Tag();
 
     tag.epc = epc;
