@@ -11,7 +11,7 @@ async function bootstrap() {
   
   await app.listen(3000);
 
-  const ls = spawn('python3', ['continuous-read.py']) ;
+  
   
 }
 bootstrap();

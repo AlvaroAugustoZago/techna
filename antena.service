@@ -3,8 +3,8 @@ Description=Techna Service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/pi/antena-service
-ExecStart=/usr/bin/npm start
+WorkingDirectory=/home/pi/antena-service/techna
+ExecStart=/home/pi/.config/nvm/versions/node/v17.1.0/bin/npm run start:prod
 Restart=on-failure
 User=pi
 Environment=PORT=8000
