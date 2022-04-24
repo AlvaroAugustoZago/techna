@@ -1,28 +1,34 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Configuracao } from 'src/domain/configuracao';
 import { AntenaGateway } from 'src/infra/antena/events.gateway';
 import { ViewGateway } from 'src/ui/events.gateway';
+import { Repository } from 'typeorm';
 import { StartServer } from './cmd/start-server.cmd';
 
 @CommandHandler(StartServer)
 export class StartServerHandler implements ICommandHandler<StartServer> {
-  constructor(private readonly viewGateway: ViewGateway, private readonly antenaGateway: AntenaGateway) {}
+  constructor(
+    private readonly viewGateway: ViewGateway,
+    private readonly antenaGateway: AntenaGateway,
+    @Inject('CONFIG_REPOSITORY')
+    private repository: Repository<Configuracao>,
+  ) {}
 
   async execute(command: StartServer) {
-    
     if (command.password == '2706') {
-      console.log(command.password)
       this.viewGateway.server.emit('authorized', null);
+      const config: Configuracao =  await this.repository.findOne();
+
       this.antenaGateway.server.emit('start', [
-        command.port,
-        parseInt(command.dbm),
-        command.bip,
-        command.seconds,
+        config.port,
+        parseInt(config.dbm),
+        config.bip,
+        config.seconds,
       ]);
       return;
     }
-    
-    this.viewGateway.server.emit('unauthorized', null);
 
-    
+    this.viewGateway.server.emit('unauthorized', null);
   }
 }

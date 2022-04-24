@@ -180,12 +180,7 @@
       var socket = io('http://localhost:3000/view');
 
       function start() {
-        const dbm = 27;
-        const port = 'COM3';
-        const seconds = 0;
-        const bip = false;
-        // console.log('start', [port, parseInt(dbm), bip, parseFloat(seconds)])
-        socket.emit('start', [port, parseInt(dbm), bip, parseFloat(seconds), document.getElementById('code').value]);
+        socket.emit('start', [document.getElementById('code').value]);
       }
 
       socket.on('authorized', (data) => {

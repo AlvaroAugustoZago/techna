@@ -7,32 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <button onclick="history.back()">Go Back</button>
+    <button onclick="history.back()">Go Back</button><br />
     <input id="dbm" value="27" /> dbm <br />
     <input id="port" value="//dev//ttyUSB0" /> Port <br />
     <input id="seconds" value="0.50" /> Seconds <br />
     <input id="bip" type="checkbox" value="true" /> Bip <br />
 
-    <button onclick="start()">Start</button>
-    <button onclick="stop()">Stop</button>
-    <button onclick="limpar()">Limpar</button>
+    <button onclick="salvar()">Salvar</button>
+    <!-- <button onclick="stop()">Stop</button>
+    <button onclick="limpar()">Limpar</button> -->
 
+    <script
+    src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+    integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+    crossorigin="anonymous"
+  ></script>
     <script>
-      function start() {
+      var socket = io('http://localhost:3000/view');
+
+      function salvar() {
         const dbm = document.getElementById('dbm').value;
         const port = document.getElementById('port').value;
         const seconds = document.getElementById('seconds').value;
         const bip = document.getElementById('bip').checked;
-        console.log('start', [port, parseInt(dbm), bip, parseFloat(seconds)])
-        // socket.emit('start', [port, parseInt(dbm), bip, parseFloat(seconds)]);
-      }
-      function stop() {
-        // socket.emit('stop');
-      }
-
-      function limpar() {
-        // createAntena1Table();
-        // socket.emit('limpar');
+        // console.log('start', [port, parseInt(dbm), bip, parseFloat(seconds)]);
+        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds)]);
       }
     </script>
   </body>

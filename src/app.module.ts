@@ -10,11 +10,14 @@ import { TagLidaHandler } from './app/tag-lida.handler';
 import { Tag } from './domain/tag';
 import { InfraModule } from './infra/infra.module';
 import { UiModule } from './ui/ui.module';
+import { Configuracao } from './domain/configuracao';
+import { ConfigurarHandler } from './app/configurar.handler';
 
 export const CommandHandlers = [
   StartServerHandler,
   StopServerHandler,
   LimparHandler,
+  ConfigurarHandler
 ];
 export const EventHandlers = [TagLidaHandler];
 
@@ -27,6 +30,11 @@ export const EventHandlers = [TagLidaHandler];
     {
       provide: 'SERVICO_REPOSITORY',
       useFactory: (connection: Connection) => connection.getRepository(Tag),
+      inject: ['DATABASE_CONNECTION'],
+    },
+    {
+      provide: 'CONFIG_REPOSITORY',
+      useFactory: (connection: Connection) => connection.getRepository(Configuracao),
       inject: ['DATABASE_CONNECTION'],
     },
   ],

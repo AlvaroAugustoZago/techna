@@ -6,6 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { Configurar } from 'src/app/cmd/configurar.cmd';
 import { Limpar } from 'src/app/cmd/limar.cmd';
 import { StartServer } from 'src/app/cmd/start-server.cmd';
 import { StopServer } from 'src/app/cmd/stop-server.cmd';
@@ -22,9 +23,14 @@ export class ViewGateway {
 
   constructor(private readonly commandBus: CommandBus) {}
 
+  @SubscribeMessage('configurar')
+  configurar(@MessageBody() data: any): void {
+    this.commandBus.execute(Configurar.of(data[0], data[1], data[2], data[3]));
+  }
+
   @SubscribeMessage('start')
   start(@MessageBody() data: any): void {
-    this.commandBus.execute(StartServer.of(data[0], data[1], data[2], data[3], data[4]));
+    this.commandBus.execute(StartServer.of(data[0]));
   }
 
   @SubscribeMessage('stop')
