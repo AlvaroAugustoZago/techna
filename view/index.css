@@ -1,0 +1,27 @@
+body {
+    background-color: #595959;
+}
+
+.teclado {
+    background-color: #807D7F;
+}
+
+.botao {
+    background-color: #333D50;
+    border-color: #7C8497;
+    color: white;
+    font-weight: bold;
+    -webkit-box-shadow: -9px 11px 36px 3px rgba(0,0,0,0.61); 
+    box-shadow: -9px 11px 36px 3px rgba(0,0,0,0.61);
+    margin: 13px;
+}
+
+.abrir {
+    background-color: #00B14F;
+} 
+
+.icone-menu {
+    background-color: #D7D7D7;
+    -webkit-box-shadow: inset -9px 11px 20px 3px rgba(255,255,255,0.52); 
+    box-shadow: inset -9px 11px 20px 3px rgba(255,255,255,0.52);
+}

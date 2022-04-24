@@ -7,6 +7,7 @@ export class StartServerHandler implements ICommandHandler<StartServer> {
   constructor(private readonly antenaGateway: AntenaGateway) {}
 
   async execute(command: StartServer) {
+    console.log(command)
     this.antenaGateway.server.emit('start', [
       command.port,
       parseInt(command.dbm),
