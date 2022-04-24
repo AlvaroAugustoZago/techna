@@ -10,6 +10,7 @@ import {
 import { Server } from 'socket.io';
 import { Configurar } from 'src/app/cmd/configurar.cmd';
 import { GetEstoque } from 'src/app/cmd/getEstoque.cmd';
+import { GetMovimentacoes } from 'src/app/cmd/getMovimentacoes.cmd';
 import { Limpar } from 'src/app/cmd/limar.cmd';
 import { StartServer } from 'src/app/cmd/start-server.cmd';
 import { StopServer } from 'src/app/cmd/stop-server.cmd';
@@ -51,5 +52,10 @@ export class ViewGateway {
   @SubscribeMessage('estoque')
   estoque(): void {
     this.commandBus.execute(new GetEstoque());
+  }
+
+  @SubscribeMessage('movimentacoes')
+  movimentacoes(): void {
+    this.commandBus.execute(new GetMovimentacoes());
   }
 }

@@ -14,13 +14,15 @@ import { Configuracao } from './domain/configuracao';
 import { ConfigurarHandler } from './app/configurar.handler';
 import { GetEstoqueHandler } from './app/getEstoque.handler';
 import { Produto } from './domain/produto';
+import { GetMovimentacoesHandler } from './app/getMovimentacoes.handler';
 
 export const CommandHandlers = [
   StartServerHandler,
   StopServerHandler,
   LimparHandler,
   ConfigurarHandler,
-  GetEstoqueHandler
+  GetEstoqueHandler,
+  GetMovimentacoesHandler
 ];
 export const EventHandlers = [TagLidaHandler];
 

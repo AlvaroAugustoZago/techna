@@ -16,6 +16,9 @@ export class Tag {
 
   @Column( {default: 0, type: 'bigint'})
   antena4: string;
+  
+  @Column( {default: false, type: 'boolean'})
+  enviado: boolean;
 
   movimentar(horaLeitura: string, antena: number) {
     if (antena === 1) this.antena1 = horaLeitura;
