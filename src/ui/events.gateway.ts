@@ -24,7 +24,7 @@ export class ViewGateway {
 
   @SubscribeMessage('start')
   start(@MessageBody() data: any): void {
-    this.commandBus.execute(StartServer.of(data[0], data[1], data[2], data[3]));
+    this.commandBus.execute(StartServer.of(data[0], data[1], data[2], data[3], data[4]));
   }
 
   @SubscribeMessage('stop')

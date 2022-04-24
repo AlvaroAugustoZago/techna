@@ -5,6 +5,7 @@ import { ViewGateway } from '../ui/events.gateway';
 import { Repository } from 'typeorm';
 import { TagLida } from './cmd/tag-lida.cmd';
 import { Optional } from 'typescript-optional';
+import { GtplanService } from 'src/infra/gtplan/gtplan.service';
 
 @EventsHandler(TagLida)
 export class TagLidaHandler implements IEventHandler<TagLida> {
@@ -20,6 +21,7 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     private readonly antenaGateway: ViewGateway,
     @Inject('SERVICO_REPOSITORY')
     private repository: Repository<Tag>,
+    private readonly gtplanService: GtplanService
   ) {}
 
   async handle(command: TagLida) {
@@ -38,6 +40,8 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
         this.repository.save(tag);
       },
     );
+
+    this.gtplanService.send(); //tag
 
     //this.antenaGateway.server.emit('exibTag', tag);
   }

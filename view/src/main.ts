@@ -14,6 +14,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
     },
     width: 500,
+    frame:false
   });
 
   // mainWindow.maximize();

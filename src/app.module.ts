@@ -1,3 +1,4 @@
+import { GtplanService } from './infra/gtplan/gtplan.service';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { Connection } from 'typeorm';

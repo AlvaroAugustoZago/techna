@@ -4,9 +4,10 @@ export class StartServer {
         public readonly dbm: string,
         public readonly bip: boolean,
         public readonly seconds: number,
+        public readonly password: string
       ) {}
 
-    static of(port, dbm, bip, seconds): StartServer {
-        return new StartServer(port, dbm, bip,seconds);
+    static of(port, dbm, bip, seconds, password): StartServer {
+        return new StartServer(port, dbm, bip,seconds, password);
     }    
 }
