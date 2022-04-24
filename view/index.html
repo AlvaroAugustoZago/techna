@@ -99,7 +99,6 @@
                 class="btn btn-primary py-3 botao abrir"
                 onclick="start()"
               >
-
                 <!-- data-bs-toggle="modal"
                 data-bs-target="#newInstallModal" -->
                 Abrir
@@ -153,11 +152,7 @@
       </div>
     </div>
 
-    <div
-      class="modal"
-      tabindex="-1"
-      id="senhaInvalidaModal"
-    >
+    <div class="modal" tabindex="-1" id="senhaInvalidaModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -176,24 +171,37 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      
       var socket = io('http://localhost:3000/view');
+      const { Gpio } = require('onoff').Gpio;
 
       function start() {
         socket.emit('start', [document.getElementById('code').value]);
       }
 
       socket.on('authorized', (data) => {
-        console.log('authorized')
-        var myModal = new bootstrap.Modal(document.getElementById('newInstallModal'), {backdrop:'static', keyboard: false})
-        myModal.show();
+        const ledOut = new Gpio('4', 'out');
 
-      })
-      socket.on('unauthorized', (data) => {
-        var myModal = new bootstrap.Modal(document.getElementById('senhaInvalidaModal'), {backdrop:'static', keyboard: false})
+        let isLedOn = false;
+
+        setInterval(() => {
+          ledOut.writeSync(isLedOn ? 0 : 1); // provide 1 or 0
+          isLedOn = !isLedOn; // toggle state
+        }, 3000); // 3s
+
+        var myModal = new bootstrap.Modal(
+          document.getElementById('newInstallModal'),
+          { backdrop: 'static', keyboard: false },
+        );
         myModal.show();
-        setTimeout(() => myModal.toggle(), 3000)
-      })
+      });
+      socket.on('unauthorized', (data) => {
+        var myModal = new bootstrap.Modal(
+          document.getElementById('senhaInvalidaModal'),
+          { backdrop: 'static', keyboard: false },
+        );
+        myModal.show();
+        setTimeout(() => myModal.toggle(), 3000);
+      });
       socket.on('message', (data) => console.log(data));
     </script>
     <script src="./dist/renderer.js"></script>
