@@ -17,12 +17,16 @@ export class Configuracao {
   @Column({ default: 0, type: 'bigint' })
   seconds: number;
 
-  static of(port: string, dbm: string, bip: boolean, seconds: number): Configuracao {
+  @Column({ default: '0000', type: 'varchar' })
+  password: string;
+
+  static of(port: string, dbm: string, bip: boolean, seconds: number, password: string): Configuracao {
     const config: Configuracao = new Configuracao();
     config.bip = bip;
     config.dbm = dbm;
     config.port = port;
     config.seconds = seconds;
+    config.password = password;
     return config;
   }
 }

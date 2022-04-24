@@ -12,10 +12,9 @@
     <input id="port" value="//dev//ttyUSB0" /> Port <br />
     <input id="seconds" value="0.50" /> Seconds <br />
     <input id="bip" type="checkbox" value="true" /> Bip <br />
+    <input id="password" value="" /> Password <br />
 
     <button onclick="salvar()">Salvar</button>
-    <!-- <button onclick="stop()">Stop</button>
-    <button onclick="limpar()">Limpar</button> -->
 
     <script
     src="https://cdn.socket.io/4.3.2/socket.io.min.js"
@@ -24,14 +23,22 @@
   ></script>
     <script>
       var socket = io('http://localhost:3000/view');
+      window.onload = () => socket.emit('configuracoes', null);
 
+      socket.on('configuracoesAtuais', (data) => {
+        document.getElementById('dbm').value = data.dbm;
+        document.getElementById('port').value = data.port;
+        document.getElementById('seconds').value = data.seconds;
+        document.getElementById('bip').checked  = data.bip;
+        document.getElementById('password').value = data.password 
+      });
       function salvar() {
         const dbm = document.getElementById('dbm').value;
         const port = document.getElementById('port').value;
         const seconds = document.getElementById('seconds').value;
         const bip = document.getElementById('bip').checked;
-        // console.log('start', [port, parseInt(dbm), bip, parseFloat(seconds)]);
-        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds)]);
+        const password =document.getElementById('password').value
+        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds), password]);
       }
     </script>
   </body>

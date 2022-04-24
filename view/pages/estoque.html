@@ -44,11 +44,7 @@
     ></script>
     <script>
       var socket = io('http://localhost:3000/view');
-      window.onload = () => {
-        console.log('load');
-        socket.emit('estoque', null);
-      };
-
+      window.onload = () => socket.emit('estoque', null);
   
       socket.on('estoqueAtual', (data) => {
         var table = document.getElementById("produtos");

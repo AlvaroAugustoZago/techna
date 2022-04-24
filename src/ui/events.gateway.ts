@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Configurar } from 'src/app/cmd/configurar.cmd';
+import { GetConfiguracoes } from 'src/app/cmd/getConfiguracoes.cmd';
 import { GetEstoque } from 'src/app/cmd/getEstoque.cmd';
 import { GetMovimentacoes } from 'src/app/cmd/getMovimentacoes.cmd';
 import { Limpar } from 'src/app/cmd/limar.cmd';
@@ -31,7 +32,7 @@ export class ViewGateway {
 
   @SubscribeMessage('configurar')
   configurar(@MessageBody() data: any): void {
-    this.commandBus.execute(Configurar.of(data[0], data[1], data[2], data[3]));
+    this.commandBus.execute(Configurar.of(data[0], data[1], data[2], data[3], data[4]));
   }
 
   @SubscribeMessage('start')
@@ -57,5 +58,10 @@ export class ViewGateway {
   @SubscribeMessage('movimentacoes')
   movimentacoes(): void {
     this.commandBus.execute(new GetMovimentacoes());
+  }
+
+  @SubscribeMessage('configuracoes')
+  configuracoes(): void {
+    this.commandBus.execute(new GetConfiguracoes());
   }
 }

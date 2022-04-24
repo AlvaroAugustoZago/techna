@@ -16,10 +16,11 @@ export class StartServerHandler implements ICommandHandler<StartServer> {
   ) {}
 
   async execute(command: StartServer) {
-    if (command.password == '2706') {
-      this.viewGateway.server.emit('authorized', null);
-      const config: Configuracao =  await this.repository.findOne();
+    const config: Configuracao =  await this.repository.findOne();
 
+    if (command.password == config.password) {
+      this.viewGateway.server.emit('authorized', null);
+      
       this.antenaGateway.server.emit('start', [
         config.port,
         parseInt(config.dbm),
