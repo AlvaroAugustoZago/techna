@@ -12,12 +12,15 @@ import { InfraModule } from './infra/infra.module';
 import { UiModule } from './ui/ui.module';
 import { Configuracao } from './domain/configuracao';
 import { ConfigurarHandler } from './app/configurar.handler';
+import { GetEstoqueHandler } from './app/getEstoque.handler';
+import { Produto } from './domain/produto';
 
 export const CommandHandlers = [
   StartServerHandler,
   StopServerHandler,
   LimparHandler,
-  ConfigurarHandler
+  ConfigurarHandler,
+  GetEstoqueHandler
 ];
 export const EventHandlers = [TagLidaHandler];
 
@@ -35,6 +38,11 @@ export const EventHandlers = [TagLidaHandler];
     {
       provide: 'CONFIG_REPOSITORY',
       useFactory: (connection: Connection) => connection.getRepository(Configuracao),
+      inject: ['DATABASE_CONNECTION'],
+    },
+    {
+      provide: 'PRODUTO_REPOSITORY',
+      useFactory: (connection: Connection) => connection.getRepository(Produto),
       inject: ['DATABASE_CONNECTION'],
     },
   ],

@@ -1,4 +1,5 @@
 import { Configuracao } from 'src/domain/configuracao';
+import { Produto } from 'src/domain/produto';
 import { Tag } from 'src/domain/tag';
 import { createConnection } from 'typeorm';
 
@@ -14,7 +15,7 @@ export const databaseProviders = [
         password: 'root',
         database: 'techna',
         insecureAuth: true,
-        entities: [Tag, Configuracao],//__dirname + '/../domain/*{.ts,.js}'
+        entities: [Tag, Configuracao, Produto],//__dirname + '/../domain/*{.ts,.js}'
         migrationsTableName: 'custom_migration_table',
         migrations: ['migration/*.js'],
         cli: { migrationsDir: 'migration' },

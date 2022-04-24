@@ -1,15 +1,20 @@
+import { Inject } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsResponse,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Configurar } from 'src/app/cmd/configurar.cmd';
+import { GetEstoque } from 'src/app/cmd/getEstoque.cmd';
 import { Limpar } from 'src/app/cmd/limar.cmd';
 import { StartServer } from 'src/app/cmd/start-server.cmd';
 import { StopServer } from 'src/app/cmd/stop-server.cmd';
+import { Tag } from 'src/domain/tag';
+import { Repository } from 'typeorm/repository/Repository';
 
 @WebSocketGateway({
   cors: {
@@ -41,5 +46,10 @@ export class ViewGateway {
   @SubscribeMessage('limpar')
   limpar(): void {
     this.commandBus.execute(new Limpar());
+  }
+
+  @SubscribeMessage('estoque')
+  estoque(): void {
+    this.commandBus.execute(new GetEstoque());
   }
 }
