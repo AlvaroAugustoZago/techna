@@ -6,18 +6,20 @@
         "build": "tsc",
         "watch": "tsc -w",
         "lint": "eslint -c .eslintrc --ext .ts ./src",
-        "start": "npm run build && electron ./dist/main.js"
+        "start": "npm run build && ./node_modules/.bin/electron-rebuild && electron ./dist/main.js"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
-        "electron": "^17.1.2",
+        "electron": "^18.1.0",
+        "electron-rebuild": "^3.2.7",
         "eslint": "^7.32.0",
         "typescript": "^4.5.5"
     },
     "dependencies": {
-        "onoff": "^6.0.3",
         "isomorphic-ws": "^4.0.1",
-        "nestjs-electron-ipc-transport": "^1.0.2"
+        "nestjs-electron-ipc-transport": "^1.0.2",
+        "node-abi": "^3.15.0",
+        "onoff": "^6.0.3"
     }
 }

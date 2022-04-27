@@ -1,31 +1,29 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow , ipcMain} from 'electron';
 import * as path from 'path';
-
+var Gpio = require('onoff').Gpio;
+var led4 = new Gpio(4, 'out');
 // import WebSocket from 'isomorphic-ws';
 
 // const WebSocket = require('ws');
 // const wss = new WebSocket.Server({ port: 7071 });
 
 function createWindow() {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 500,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
-      contextIsolation: false,
-  
+      contextIsolation: false
+    
     },
   
     width: 500,
     frame:false
   });
 
-  // mainWindow.maximize();
-  // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
+  //app.allowRendererProcessReuse = false
 
-  // Open the DevTools.
     // mainWindow.webContents.openDevTools();
 }
 
@@ -36,30 +34,7 @@ app.on('ready', () => {
   createWindow();
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
-
-//     const ws = new WebSocket('wss://echo.websocket.org/', {
-//       origin: 'https://websocket.org',
-//     });
-
-//     ws.onopen = function open() {
-//       console.log('connected');
-//       ws.send(Date.now());
-//     };
-
-//     ws.onclose = function close() {
-//       console.log('disconnected');
-//     };
-
-//     ws.onmessage = function incoming(data) {
-//       console.log(`Roundtrip time: ${Date.now() - data} ms`);
-
-//       setTimeout(function timeout() {
-//         ws.send(Date.now());
-//       }, 500);
-//     };
   });
 });
 
@@ -71,6 +46,16 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+ipcMain.on('GPIO', (event, arg) => {
+    console.log("GPIO",arg)
+    if(arg==='ON'){
+        led4.write(1)
+    }
+    else{
+        led4.write(0)
+    }
+  });
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
