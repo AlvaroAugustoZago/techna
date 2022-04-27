@@ -9,15 +9,15 @@ var led4 = new Gpio(4, 'out');
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    height: 500,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false
     
     },
-  
-    width: 500,
+    fullscreen:true,
+    width: 1024,
     frame:false
   });
 
