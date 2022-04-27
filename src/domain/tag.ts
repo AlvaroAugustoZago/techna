@@ -20,6 +20,22 @@ export class Tag {
   @Column( {default: false, type: 'boolean'})
   enviado: boolean;
 
+  get produto(): string {
+    return this.epc.substring(0, 8)
+  }
+
+  get lote(): string {
+    return this.epc.substring(9,12)
+  }
+
+  get antena(): string {
+    return "2";
+  }
+
+  get movimento(): string {
+    return "E";
+  }
+
   movimentar(horaLeitura: string, antena: number) {
     if (antena === 1) this.antena1 = horaLeitura;
     if (antena === 2) this.antena2 = horaLeitura;

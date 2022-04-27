@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { TagLida } from './cmd/tag-lida.cmd';
 import { Optional } from 'typescript-optional';
 import { GtplanService } from 'src/infra/gtplan/gtplan.service';
+import { TagGtplan } from 'src/infra/gtplan/tag';
 
 @EventsHandler(TagLida)
 export class TagLidaHandler implements IEventHandler<TagLida> {
@@ -21,7 +22,7 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     private readonly antenaGateway: ViewGateway,
     @Inject('SERVICO_REPOSITORY')
     private repository: Repository<Tag>,
-    private readonly gtplanService: GtplanService
+    private readonly gtplanService: GtplanService,
   ) {}
 
   async handle(command: TagLida) {
@@ -41,7 +42,7 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
       },
     );
 
-    this.gtplanService.send(); //tag
+    this.gtplanService.send(TagGtplan.of(tag)); //tag
 
     //this.antenaGateway.server.emit('exibTag', tag);
   }
