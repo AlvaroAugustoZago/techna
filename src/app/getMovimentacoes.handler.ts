@@ -29,7 +29,7 @@ export class GetMovimentacoesHandler
         where: { codigo },
       });
 
-      itens.push({ codigo: tag.epc, nome: produto[0].nome, enviado: tag.enviado });
+      itens.push({ codigo: tag.epc, nome: produto[0].nome, enviado: tag.dataEnvioGtplan != "0" });
     }
 
     this.viewGateway.server.emit('movimentacoesAtuais', itens);

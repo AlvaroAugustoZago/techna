@@ -18,7 +18,7 @@ export class ConfigurarHandler implements ICommandHandler<Configurar> {
     (await this.repository.find()).forEach(config => this.repository.delete(config))
     
     this.repository.save(
-      Configuracao.of(command.port, command.dbm, command.bip, command.seconds, command.password),
+      Configuracao.of(command.port, command.dbm, command.bip, command.seconds, command.password, command.tempoChecagem, command.tempoEspera),
     );
   }
 }

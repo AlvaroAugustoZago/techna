@@ -32,7 +32,7 @@ export class ViewGateway {
 
   @SubscribeMessage('configurar')
   configurar(@MessageBody() data: any): void {
-    this.commandBus.execute(Configurar.of(data[0], data[1], data[2], data[3], data[4]));
+    this.commandBus.execute(Configurar.of(data[0], data[1], data[2], data[3], data[4], data[5], data[6]));
   }
 
   @SubscribeMessage('start')

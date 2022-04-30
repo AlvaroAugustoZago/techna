@@ -16,6 +16,7 @@ import { GetEstoqueHandler } from './app/getEstoque.handler';
 import { Produto } from './domain/produto';
 import { GetMovimentacoesHandler } from './app/getMovimentacoes.handler';
 import { GetConfiguracoesHandler } from './app/getConfiguracoes.handler';
+import { PortaFechadaHandler } from './app/portaFechada.handler';
 
 export const CommandHandlers = [
   StartServerHandler,
@@ -24,7 +25,8 @@ export const CommandHandlers = [
   ConfigurarHandler,
   GetEstoqueHandler,
   GetMovimentacoesHandler,
-  GetConfiguracoesHandler
+  GetConfiguracoesHandler,
+  PortaFechadaHandler
 ];
 export const EventHandlers = [TagLidaHandler];
 

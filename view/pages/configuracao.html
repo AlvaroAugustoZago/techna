@@ -14,6 +14,9 @@
     <input id="bip" type="checkbox" value="true" /> Bip <br />
     <input id="password" value="" /> Password <br />
 
+    <input id="tempoChecagem" value="" /> Tempo Checagem <br />
+    <input id="tempoEspera" value="" /> Tempo Espera para envio <br />
+
     <button onclick="salvar()">Salvar</button>
 
     <script
@@ -30,7 +33,9 @@
         document.getElementById('port').value = data.port;
         document.getElementById('seconds').value = data.seconds;
         document.getElementById('bip').checked  = data.bip;
-        document.getElementById('password').value = data.password 
+        document.getElementById('password').value = data.password;
+        document.getElementById('tempoChecagem').value  = data.tempoChecagem;
+        document.getElementById('tempoEspera').value = data.tempoEspera; 
       });
       function salvar() {
         const dbm = document.getElementById('dbm').value;
@@ -38,7 +43,10 @@
         const seconds = document.getElementById('seconds').value;
         const bip = document.getElementById('bip').checked;
         const password =document.getElementById('password').value
-        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds), password]);
+        
+        const tempoChecagem = document.getElementById('tempoChecagem').value;
+        const tempoEspera = document.getElementById('tempoEspera').value; 
+        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds), password, tempoChecagem, tempoEspera]);
       }
     </script>
   </body>

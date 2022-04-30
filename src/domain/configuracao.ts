@@ -20,13 +20,21 @@ export class Configuracao {
   @Column({ default: '0000', type: 'varchar' })
   password: string;
 
-  static of(port: string, dbm: string, bip: boolean, seconds: number, password: string): Configuracao {
+  @Column({ default: 0, type: 'bigint' })
+  tempoChecagem: number;
+
+  @Column({ default: 0, type: 'bigint' })
+  tempoEspera: number;
+
+  static of(port: string, dbm: string, bip: boolean, seconds: number, password: string, tempoChecagem: number, tempoEspera: number): Configuracao {
     const config: Configuracao = new Configuracao();
     config.bip = bip;
     config.dbm = dbm;
     config.port = port;
     config.seconds = seconds;
     config.password = password;
+    config.tempoChecagem = tempoChecagem;
+    config.tempoEspera = tempoEspera;
     return config;
   }
 }

@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && ./node_modules/.bin/electron-rebuild npm ",
         "watch": "tsc -w",
         "lint": "eslint -c .eslintrc --ext .ts ./src",
-        "start": "npm run build && ./node_modules/.bin/electron-rebuild && electron ./dist/main.js"
+        "start": "electron ./dist/main.js"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.33.0",
