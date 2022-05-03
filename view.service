@@ -1,0 +1,12 @@
+[Unit]
+Description=view Antena Service
+After=network.target antena.service
+
+[Service]
+WorkingDirectory=/home/pi/antena-service/techna/view
+ExecStart=/home/pi/.config/nvm/versions/node/v17.1.0/bin/npm run start
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target

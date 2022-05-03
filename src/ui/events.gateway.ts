@@ -13,6 +13,7 @@ import { GetConfiguracoes } from 'src/app/cmd/getConfiguracoes.cmd';
 import { GetEstoque } from 'src/app/cmd/getEstoque.cmd';
 import { GetMovimentacoes } from 'src/app/cmd/getMovimentacoes.cmd';
 import { Limpar } from 'src/app/cmd/limar.cmd';
+import { PortaFechada } from 'src/app/cmd/portaFechada.cmd';
 import { StartServer } from 'src/app/cmd/start-server.cmd';
 import { StopServer } from 'src/app/cmd/stop-server.cmd';
 import { Tag } from 'src/domain/tag';
@@ -63,5 +64,10 @@ export class ViewGateway {
   @SubscribeMessage('configuracoes')
   configuracoes(): void {
     this.commandBus.execute(new GetConfiguracoes());
+  }
+
+  @SubscribeMessage('porta-fechada')
+  portaFechada(): void {
+    this.commandBus.execute(new PortaFechada());
   }
 }

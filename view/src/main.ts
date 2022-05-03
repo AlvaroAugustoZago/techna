@@ -1,7 +1,9 @@
-import { app, BrowserWindow , ipcMain} from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-var Gpio = require('onoff').Gpio;
-var led4 = new Gpio(4, 'out');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Gpio = require('onoff').Gpio;
+const led4 = new Gpio(4, 'out');
+const led17 = new Gpio(17, 'in');
 // import WebSocket from 'isomorphic-ws';
 
 // const WebSocket = require('ws');
@@ -13,18 +15,17 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
-      contextIsolation: false
-    
+      contextIsolation: false,
     },
-    fullscreen:true,
+    fullscreen: true,
     width: 1024,
-    frame:false
+    frame: false,
   });
 
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   //app.allowRendererProcessReuse = false
 
-    // mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -48,14 +49,26 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('GPIO', (event, arg) => {
-    console.log("GPIO",arg)
-    if(arg==='ON'){
-        led4.write(1)
-    }
-    else{
-        led4.write(0)
-    }
+  console.log('GPIO', arg);
+  if (arg === 'ON') {
+    led4.write(1);
+  } else {
+    led4.write(0);
+  }
+});
+async function waitUntil(condition: boolean) {
+  return await new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (condition) {
+        resolve('foo');
+        clearInterval(interval);
+      }
+    }, 5);
   });
+}
+ipcMain.handle('wait-close-port', async (event) => {
+  return await waitUntil(led17.readSync() === 0);
+});
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
