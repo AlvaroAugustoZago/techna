@@ -2,11 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Socket.io</title>
   </head>
 
   <body>
-    <div class="container d-flex justify-content-center">
+    <div class="container">
       <div class="row">
         <div class="col">
           <div
@@ -15,7 +14,7 @@
             aria-label="Basic example"
           >
             <div class="btn-group">
-              <input class="text-center form-control-lg mb-2" type="password" id="code" />
+              <input class="text-center form-control-lg mb-2" type="password" id="code" style="width: 28em;" />
             </div>
             <div class="btn-group">
               <button
@@ -194,6 +193,7 @@
           { backdrop: 'static', keyboard: false },
         );
         myModal.show();
+        document.getElementById('code').value = ''
         ipcRenderer.send('GPIO', 'ON');
         ipcRenderer.invoke('wait-close-port').then((result) => {
           socket.emit('porta-fechada');
@@ -206,6 +206,7 @@
           { backdrop: 'static', keyboard: false },
         );
         myModal.show();
+        document.getElementById('code').value = ''
         setTimeout(() => myModal.toggle(), 3000);
       });
       socket.on('message', (data) => console.log(data));
