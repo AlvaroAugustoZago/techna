@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container d-flex justify-content-center">
       <div class="row">
         <div class="col">
           <div
@@ -15,7 +15,7 @@
             aria-label="Basic example"
           >
             <div class="btn-group">
-              <input class="text-center form-control-lg mb-2" id="code" />
+              <input class="text-center form-control-lg mb-2" type="password" id="code" />
             </div>
             <div class="btn-group">
               <button
@@ -93,6 +93,13 @@
                 onclick="document.getElementById('code').value=document.getElementById('code').value + '0';"
               >
                 0
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary py-3 botao"
+                onclick="document.getElementById('code').value=document.getElementById('code').value.slice(0, -1);"
+              >
+              <div style='text-align:center;'><i class="fa-solid fa-delete-left"></i></div>
               </button>
               <button
                 type="button"
@@ -215,6 +222,8 @@
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"
     ></script>
+    <link href="./assets/fontawesome/css/all.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="./index.css" />
   </body>
 </html>
