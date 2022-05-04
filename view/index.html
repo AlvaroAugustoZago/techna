@@ -193,7 +193,7 @@
     <script src="./dist/renderer.js"></script>
     <script>
       var socket = io('http://localhost:3000/view');
-      // const { ipcRenderer } = require('electron');
+      const { ipcRenderer } = require('electron');
       let password = '';
       function start() {
         socket.emit('start', [password]);
