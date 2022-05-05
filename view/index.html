@@ -175,7 +175,7 @@
       id="newInstallModal"
       aria-labelledby="settings"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Porta aberta</h5>
@@ -188,7 +188,7 @@
     </div>
 
     <div class="modal" tabindex="-1" id="senhaInvalidaModal">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered bg-success"> 
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Senha invalida</h5>
@@ -209,7 +209,7 @@
     <script src="./dist/renderer.js"></script>
     <script>
       var socket = io('http://localhost:3000/view');
-      const { ipcRenderer } = require('electron');
+      // const { ipcRenderer } = require('electron');
       let password = '';
       function start() {
         socket.emit('start', [password]);
@@ -217,7 +217,7 @@
 
       function setValue(value) {
         resetTimer();
-        
+
         if (password.length == 7) {
           start();
           return;
