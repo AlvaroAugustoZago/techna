@@ -56,6 +56,9 @@ ipcMain.on('GPIO', (event, arg) => {
     led4.write(0);
   }
 });
+
+ipcMain.handle('is-porta-aberta', () => led17.readSync() === 1);
+
 async function waitUntil(condition: boolean) {
   return await new Promise((resolve) => {
     const interval = setInterval(() => {
