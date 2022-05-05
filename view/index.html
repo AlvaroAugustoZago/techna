@@ -175,21 +175,20 @@
       id="newInstallModal"
       aria-labelledby="settings"
     >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header alert-success">
-            <h5 class="modal-title">A Porta está aberta!</h5>
-          </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg"> 
+      <div class="modal-content" style="height: 17em;width: 25em;margin-left: 15em;background-color: green;color: white;">
+        <div class="modal-body">
+          <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;"><span style="padding-left: 0.4em;"> Porta </span> Liberada!</h1>
         </div>
       </div>
     </div>
+    </div>
 
     <div class="modal" tabindex="-1" id="senhaInvalidaModal">
-      <div class="modal-dialog modal-dialog-centered bg-success"> 
-        <div class="modal-content">
-          <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
-            <div class="card-header alert-danger">Senha invalida!</div>
-            
+      <div class="modal-dialog modal-dialog-centered modal-lg"> 
+        <div class="modal-content" style="height: 17em;width: 25em;margin-left: 15em;background-color: red;color: white;">
+          <div class="modal-body">
+            <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;"><span style="padding-left: 0.4em;">Senha</span> Invalida!</h1>
           </div>
         </div>
       </div>
@@ -214,7 +213,12 @@
         resetTimer();
 
         if (password.length == 7) {
-          start();
+          // start();
+          var myModal = new bootstrap.Modal(
+          document.getElementById('newInstallModal'),
+          { backdrop: 'static', keyboard: false },
+        );
+        myModal.show();
           return;
         }
         password += value;
