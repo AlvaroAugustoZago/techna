@@ -213,12 +213,7 @@
         resetTimer();
 
         if (password.length == 7) {
-          // start();
-          var myModal = new bootstrap.Modal(
-          document.getElementById('newInstallModal'),
-          { backdrop: 'static', keyboard: false },
-        );
-        myModal.show();
+          start();
           return;
         }
         password += value;
