@@ -6,7 +6,7 @@
 
   <body>
     <div class="d-flex flex-row">
-      <div class="p-2">
+      <div class="p-2" style="height: 37.5em;">
         <div
           class="btn-group-vertical ml-4 mt-4 teclado"
           role="group"
@@ -99,7 +99,7 @@
             <button
               type="button"
               class="btn btn-outline-secondary py-3 botao"
-              onclick="document.getElementById('code').value=document.getElementById('code').value.slice(0, -1);"
+              onclick="apagar();"
               style="width: 41%;"
               >
               <div style="text-align: center">
@@ -193,7 +193,7 @@
     <script src="./dist/renderer.js"></script>
     <script>
       var socket = io('http://localhost:3000/view');
-      const { ipcRenderer } = require('electron');
+      // const { ipcRenderer } = require('electron');
       let password = '';
       function start() {
         socket.emit('start', [password]);
@@ -210,13 +210,21 @@
           .join(' ');
       }
 
+      function apagar() {
+        password = password.slice(0, -1)
+        document.getElementById('code').innerHTML = Array(password.length)
+          .fill('<i class="fa-solid fa-circle"></i>')
+          .join(' ');
+      }
+
       socket.on('authorized', (data) => {
         var myModal = new bootstrap.Modal(
           document.getElementById('newInstallModal'),
           { backdrop: 'static', keyboard: false },
         );
         myModal.show();
-        document.getElementById('code').value = '';
+        password = ''
+        document.getElementById('code').innerHTML = '';
         ipcRenderer.send('GPIO', 'ON');
         ipcRenderer.invoke('wait-close-port').then((result) => {
           socket.emit('porta-fechada');
@@ -229,7 +237,8 @@
           { backdrop: 'static', keyboard: false },
         );
         myModal.show();
-        document.getElementById('code').value = '';
+        password = ''
+        document.getElementById('code').innerHTML = '';
         setTimeout(() => myModal.toggle(), 3000);
       });
       socket.on('message', (data) => console.log(data));
