@@ -21,15 +21,15 @@ export class GetMovimentacoesHandler
 
   async execute(command: GetMovimentacoes) {
     const tags = await this.repository.find();
-    const itens: Array<{ codigo: string; nome: string; enviado: boolean }> = [];
+    const itens: Array<{ codigo: string; nome?: string; enviado: boolean; movimento: string }> = [];
     for (const tag of tags) {
       const codigo: string = tag.epc.substring(13, 17);
       
-      const produto = await this.produtoRepository.find({
-        where: { codigo },
-      });
+      // const produto = await this.produtoRepository.find({
+      //   where: { codigo },
+      // });
 
-      itens.push({ codigo: tag.epc, nome: produto[0].nome, enviado: tag.dataEnvioGtplan != "0" });
+      itens.push({ codigo: tag.epc, enviado: tag.dataEnvioGtplan != "0", movimento: tag.movimento });
     }
 
     this.viewGateway.server.emit('movimentacoesAtuais', itens);

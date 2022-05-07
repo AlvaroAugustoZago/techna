@@ -44,8 +44,8 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
       });
 
       saidos.forEach((tag) => {
-        this.gtplanService.send(TagGtplan.of(tag));
         tag.enviar('S');
+        this.gtplanService.send(TagGtplan.of(tag));
       });
 
       const entrada = await this.repository.find({
@@ -56,8 +56,8 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
       });
 
       entrada.forEach((tag) => {
-        this.gtplanService.send(TagGtplan.of(tag));
         tag.enviar('E');
+        this.gtplanService.send(TagGtplan.of(tag));
       });
     });
     // setTimeout(this.cicloChecagem, toMs(30));

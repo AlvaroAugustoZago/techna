@@ -14,32 +14,13 @@
       <thead>
         <tr>
           <th scope="col">Codigo</th>
-          <th scope="col">Produto</th>
+          <!-- <th scope="col">Produto</th> -->
           <th scope="col">Enviado</th>
+          <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
-        <!-- <tr>
-            <td>124309</td>
-            <td>Sorrisal</td>
-            <td><i class="fa-solid fa-check" style="color:greenyellow"></i></td>
-        </tr>
-        <tr>
-            <td>12</td>
-            <td>Dorflex</td>
-          <td><i class="fa-solid fa-xmark" style="color:red"></i></td>
-        </tr>
-        <tr>
-            <td>30</td>
-            <td>Dipirona</td>
-          
-          <td><i class="fa-solid fa-check" style="color:greenyellow"></i></td>
-        </tr>
-        <tr>
-            <td>123122</td>
-          <td>Melhoral</td>
-          <td><i class="fa-solid fa-check" style="color:greenyellow"></i></td>
-        </tr> -->
+      
       </tbody>
     </table>
 
@@ -58,11 +39,13 @@
       data.forEach(item => {
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
+        // var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(1);
+        var cell4 = row.insertCell(2);
         cell1.innerHTML = item.codigo;
-        cell2.innerHTML = item.nome;
+        // cell2.innerHTML = item.nome;
         cell3.innerHTML = item.enviado ? '<i class="fa-solid fa-check" style="color:greenyellow"></i>': '<i class="fa-solid fa-xmark" style="color:red"></i>'
+        coll4.innerHTML = item.movimento;
       })
     });
   </script>
