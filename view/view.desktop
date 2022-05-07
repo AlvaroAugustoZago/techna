@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Personal File
+Exec=/home/pi/.config/nvm/versions/node/v17.1.0/bin/npm run start

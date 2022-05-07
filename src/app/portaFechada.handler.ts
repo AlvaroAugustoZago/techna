@@ -34,7 +34,7 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
     const configuracao: Configuracao =
       await this.configuracaoRepository.findOne();
 
-    sleep(toMs(configuracao.tempoEspera), this.cicloChecagem).then(async () => {
+    sleep(toMs(configuracao.tempoEspera), this.cicloChecagem.bind(configuracao)).then(async () => {
       const minutes = new Date().getTime() - 10 * 60000;
       const saidos = await this.repository.find({
         where: {
@@ -65,9 +65,7 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
     //                                                                                      -> se ele nao tiver envia como entrada
   }
 
-  async cicloChecagem() {
-    const configuracao: Configuracao =
-      await this.configuracaoRepository.findOne();
+  async cicloChecagem(configuracao: Configuracao) {
 
     sleep(toMs(configuracao.tempoChecagem), () =>
       this.commandBus.execute(new StopServer()),

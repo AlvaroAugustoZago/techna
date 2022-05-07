@@ -252,7 +252,7 @@
         ipcRenderer.send('GPIO', 'ON');
         //timer
         setTimeout(() => {
-          const isPortaAborta = ipcRenderer.invoke('is-porta-aberta');
+         ipcRenderer.invoke('is-porta-aberta').then((isPortaAborta) => {
           if (!isPortaAborta) {
             ipcRenderer.send('GPIO', 'OFF');
             myModal.toggle();
@@ -262,6 +262,8 @@
               myModal.toggle();
             });
           }
+          });
+         
         }, 5000);
 
       });
