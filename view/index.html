@@ -240,33 +240,30 @@
         clearTimeout(timeSenha);
         timeSenha =setTimeout(apagaSenha, 5000);
       }
-
+      
 
       socket.on('authorized', (data) => {
-        var myModal = new bootstrap.Modal(
+        const modalAutorizado = new bootstrap.Modal(
           document.getElementById('newInstallModal'),
           { backdrop: 'static', keyboard: false },
         );
-        myModal.show();
+        modalAutorizado.show();
         apagaSenha()
         ipcRenderer.send('GPIO', 'ON');
         //timer
-        setTimeout(() => {
-         ipcRenderer.invoke('is-porta-aberta').then((isPortaAborta) => {
-          if (!isPortaAborta) {
-            ipcRenderer.send('GPIO', 'OFF');
-            myModal.toggle();
-          } else {
-            ipcRenderer.invoke('wait-close-port').then((result) => {
-              socket.emit('porta-fechada');
-              myModal.toggle();
-            });
-          }
-          });
-         
-        }, 5000);
+       
 
       });
+      ipcRenderer.on('fechar-modal', (event, message) => {
+          var myModal = document.getElementById('newInstallModal')
+          var modal = bootstrap.Modal.getInstance(myModal) 
+          modal.toggle();
+      })
+
+      ipcRenderer.on('porta-fechada', () => {
+        socket.emit('porta-fechada');
+      })
+
       socket.on('unauthorized', (data) => {
         var myModal = new bootstrap.Modal(
           document.getElementById('senhaInvalidaModal'),

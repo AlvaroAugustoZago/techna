@@ -3,12 +3,9 @@ import * as path from 'path';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Gpio = require('onoff').Gpio;
 const led4 = new Gpio(4, 'out');
-const led17 = new Gpio(17, 'in');
-// import WebSocket from 'isomorphic-ws';
-
-// const WebSocket = require('ws');
-// const wss = new WebSocket.Server({ port: 7071 });
-
+const led17 = new Gpio(17, 'in', 'both');
+let statusPorta = 0;
+let win: BrowserWindow;
 function createWindow() {
   const mainWindow = new BrowserWindow({
     height: 600,
@@ -23,9 +20,12 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
-  //app.allowRendererProcessReuse = false
 
-  // mainWindow.webContents.openDevTools();
+  led17.watch((err: Error, value: number) => { 
+    if (err) throw err;
+    statusPorta = value;
+  });
+  win = mainWindow;
 }
 
 // This method will be called when Electron has finished
@@ -50,28 +50,41 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('GPIO', (event, arg) => {
   console.log('GPIO', arg);
-  if (arg === 'ON') {
-    led4.write(1);
-  } else {
-    led4.write(0);
-  }
-});
-
-ipcMain.handle('is-porta-aberta', () => led17.readSync() === 1);
-
-async function waitUntil(condition: boolean) {
-  return await new Promise((resolve) => {
+  led4.write(PortaStatus[arg]);
+  setTimeout(() => {
+    led4.write(PortaStatus.OFF);
+    if (statusPorta == PortaStatus.OFF) {
+      win.webContents.send('fechar-modal', null);
+      return;
+    }
     const interval = setInterval(() => {
-      if (condition) {
-        resolve('foo');
-        clearInterval(interval);
+      if (statusPorta == PortaStatus.OFF) {
+        clearInterval(interval)
+        win.webContents.send('fechar-modal', null);
+        win.webContents.send('porta-fechada', null)
       }
-    }, 5);
-  });
-}
-ipcMain.handle('wait-close-port', async (event) => {
-  return await waitUntil(led17.readSync() === 0);
+    }, 1)
+
+    //  ipcRenderer.invoke('is-porta-aberta').then((isPortaAborta) => {
+    //   if (!isPortaAborta) {
+    //     ipcRenderer.send('GPIO', 'OFF');
+    //     
+    //   } else {
+    //     ipcRenderer.invoke('wait-close-port').then((result) => {
+    //       socket.emit('porta-fechada');
+    //       myModal.toggle();
+    //     });
+    //   }
+    //   });
+     
+    }, 3000);
 });
+
+ipcMain.handle('status-porta', ()=> statusPorta)
+
+enum PortaStatus {
+  ON=1, OFF=0
+}
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
