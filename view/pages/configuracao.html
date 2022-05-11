@@ -3,27 +3,91 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Page Title</title>
+    <title>Configurações</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <button onclick="history.back()">Go Back</button><br />
-    <input id="dbm" value="27" /> dbm <br />
-    <input id="port" value="//dev//ttyUSB0" /> Port <br />
-    <input id="seconds" value="0.50" /> Seconds <br />
-    <input id="bip" type="checkbox" value="true" /> Bip <br />
-    <input id="password" value="" /> Password <br />
+    <button class="botao"onclick="history.back()">
+      <i class="fa-solid fa-arrow-left"></i></button
+    ><br />
 
-    <input id="tempoChecagem" value="" /> Tempo Checagem <br />
-    <input id="tempoEspera" value="" /> Tempo Espera para envio <br />
+    <form style="margin-left: 25%;background-color: RGB( 65,92,186);width: 50%;">
+      <div class="row g-3 align-items-center mt-2" style="padding-left: 4%;">
+        <div class="col-auto">
+          <label for="dbm" class="form-label"
+          ><i class="fa-solid fa-wifi"></i> DBM
+        </label>
+        </div>
+        <div class="col-auto">
+          <input type="number" class="form-control" id="dbm" style="margin-left: 78%;" />
+        </div>     
+      </div>
 
-    <button onclick="salvar()">Salvar</button>
+      <div class="row g-3 align-items-center mt-2" style="padding-left: 4%;">
+        <div class="col-auto">
+          <label for="port" class="form-label"
+          ><i class="fa-solid fa-plug-circle-bolt"></i> Port
+        </label>
+        
+        </div>
+        <div class="col-auto">
+          <input type="text" class="form-control" id="port" style="margin-left: 83%;" />
+        </div>     
+      </div>
+
+      <div class="row g-3 align-items-center mt-2 " style="padding-left: 4%;">
+        <div class="col-auto">
+          <label class="form-check-label" for="bip"><i class="fa-solid fa-file-audio"></i> Bip</label>
+        </label>
+        </div>
+        <div class="col-auto container" style="margin-left: 36%;">
+          
+            <label class="switch" for="checkbox">
+              <input type="checkbox" id="checkbox" />
+              <div class="slider round"></div>
+            </label>          
+        </div>     
+      </div>
+
+      <div class="row g-3 align-items-center mt-2" style="padding-left: 4%;">
+        <div class="col-auto">
+          <label for="password" class="col-form-label"><i class="fa-solid fa-key"></i> Password</label>
+        </div>
+        <div class="col-auto">
+          <input type="password" id="password" style="margin-left: 69%;" class="form-control">
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-center mt-2" style="padding-left: 4%;">
+        <div class="col-auto">
+          <label for="tempoChecagem" class="form-label"
+          >  <i class="fa-solid fa-clock"></i> Tempo Checagem
+        </label>
+        </div>
+        <div class="col-auto">
+          <input type="number" class="form-control" id="tempoChecagem" style="margin-left: 30%;" />
+        </div>     
+      </div>
+
+      <div class="row g-3 align-items-center mt-2" style="padding-left: 4%;">
+        <div class="col-auto">
+          <label for="tempoEspera" class="form-label"
+          > <i class="fa-solid fa-business-time"></i> Tempo Espera para envio
+        </label>
+        </div>
+        <div class="col-auto">
+          <input type="number" class="form-control" id="tempoEspera" />
+        </div>     
+      </div>
+      
+      <button onclick="salvar()" class="btn btn-primary" style="margin-left: 80%;margin-top: 4%;margin-bottom: 3%;">Salvar</button>
+    </form>
 
     <script
-    src="https://cdn.socket.io/4.3.2/socket.io.min.js"
-    integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
-    crossorigin="anonymous"
-  ></script>
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
     <script>
       var socket = io('http://localhost:3000/view');
       window.onload = () => socket.emit('configuracoes', null);
@@ -32,23 +96,108 @@
         document.getElementById('dbm').value = data.dbm;
         document.getElementById('port').value = data.port;
         document.getElementById('seconds').value = data.seconds;
-        document.getElementById('bip').checked  = data.bip;
+        document.getElementById('bip').checked = data.bip;
         document.getElementById('password').value = data.password;
-        document.getElementById('tempoChecagem').value  = data.tempoChecagem;
-        document.getElementById('tempoEspera').value = data.tempoEspera; 
+        document.getElementById('tempoChecagem').value = data.tempoChecagem;
+        document.getElementById('tempoEspera').value = data.tempoEspera;
       });
       function salvar() {
         const dbm = document.getElementById('dbm').value;
         const port = document.getElementById('port').value;
         const seconds = document.getElementById('seconds').value;
         const bip = document.getElementById('bip').checked;
-        const password =document.getElementById('password').value
-        
+        const password = document.getElementById('password').value;
+
         const tempoChecagem = document.getElementById('tempoChecagem').value;
-        const tempoEspera = document.getElementById('tempoEspera').value; 
-        socket.emit('configurar', [port, parseInt(dbm), bip, parseFloat(seconds), password, tempoChecagem, tempoEspera]);
+        const tempoEspera = document.getElementById('tempoEspera').value;
+        socket.emit('configurar', [
+          port,
+          parseInt(dbm),
+          bip,
+          parseFloat(seconds),
+          password,
+          tempoChecagem,
+          tempoEspera,
+        ]);
       }
     </script>
+    <style>
+      body {
+        background-color: RGB(96, 93, 246) !important;
+      }
+      label{
+        font-size: large;
+        font-weight: 600
+      }
+      .switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 26px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.botao{
+  background-color: #333D50;
+    border-color: #7C8497;
+    color: white;
+    -webkit-box-shadow: -9px 11px 36px 3px rgba(0,0,0,0.61); 
+    box-shadow: -9px 11px 36px 3px rgba(0,0,0,0.61);
+    margin: 13px;
+    width: 2em;
+    height: 2em;
+    border-top-left-radius:42px;
+  border-top-right-radius:42px;
+  border-bottom-left-radius:42px;
+  border-bottom-right-radius:42px;
+}
+
+.fa-solid {
+  color: white;
+}
+
+    </style>
   </body>
 
   <link
@@ -62,4 +211,5 @@
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"
   ></script>
+  <link href="../assets/fontawesome/css/all.min.css" rel="stylesheet" />
 </html>

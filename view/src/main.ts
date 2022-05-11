@@ -21,7 +21,7 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
 
-  led17.watch((err: Error, value: number) => { 
+  led17.watch((err: Error, value: number) => {
     if (err) throw err;
     statusPorta = value;
   });
@@ -59,31 +59,19 @@ ipcMain.on('GPIO', (event, arg) => {
     }
     const interval = setInterval(() => {
       if (statusPorta == PortaStatus.OFF) {
-        clearInterval(interval)
+        clearInterval(interval);
         win.webContents.send('fechar-modal', null);
-        win.webContents.send('porta-fechada', null)
+        win.webContents.send('porta-fechada', null);
       }
-    }, 1)
-
-    //  ipcRenderer.invoke('is-porta-aberta').then((isPortaAborta) => {
-    //   if (!isPortaAborta) {
-    //     ipcRenderer.send('GPIO', 'OFF');
-    //     
-    //   } else {
-    //     ipcRenderer.invoke('wait-close-port').then((result) => {
-    //       socket.emit('porta-fechada');
-    //       myModal.toggle();
-    //     });
-    //   }
-    //   });
-     
-    }, 3000);
+    }, 1);
+  }, 3000);
 });
 
-ipcMain.handle('status-porta', ()=> statusPorta)
+ipcMain.handle('status-porta', () => statusPorta);
 
 enum PortaStatus {
-  ON=1, OFF=0
+  ON = 1,
+  OFF = 0,
 }
 
 // In this file you can include the rest of your app"s specific main process
