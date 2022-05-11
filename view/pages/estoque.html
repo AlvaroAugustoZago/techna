@@ -8,7 +8,9 @@
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
   </head>
   <body>
-    <button onclick="history.back()">Go Back</button>
+    <button class="botao" onclick="history.back()">
+      <i class="fa-solid fa-arrow-left"></i></button
+    ><br />
 
     <table class="table" id="produtos">
       <thead>
@@ -17,26 +19,31 @@
           <th scope="col">Quantidade</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- <tr>
-          <td>Sorrisal</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>Dorflex</td>
-          <td>12</td>
-        </tr>
-        <tr>
-          <td>Dipirona</td>
-          <td>30</td>
-        </tr>
-        <tr>
-          <td>Melhoral</td>
-          <td>14</td>
-        </tr> -->
-      </tbody>
+      <tbody></tbody>
     </table>
+    <style>
+      body {
+        background-color: RGB(96, 93, 246) !important;
+      }
+      .botao {
+        background-color: #333d50;
+        border-color: #7c8497;
+        color: white;
+        -webkit-box-shadow: -9px 11px 36px 3px rgba(0, 0, 0, 0.61);
+        box-shadow: -9px 11px 36px 3px rgba(0, 0, 0, 0.61);
+        margin: 13px;
+        width: 2em;
+        height: 2em;
+        border-top-left-radius: 42px;
+        border-top-right-radius: 42px;
+        border-bottom-left-radius: 42px;
+        border-bottom-right-radius: 42px;
+      }
 
+      .fa-solid {
+        color: white;
+      }
+    </style>
     <script
       src="https://cdn.socket.io/4.3.2/socket.io.min.js"
       integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
@@ -45,16 +52,16 @@
     <script>
       var socket = io('http://localhost:3000/view');
       window.onload = () => socket.emit('estoque', null);
-  
+
       socket.on('estoqueAtual', (data) => {
-        var table = document.getElementById("produtos");
-        data.forEach(item => {
+        var table = document.getElementById('produtos');
+        data.forEach((item) => {
           var row = table.insertRow(-1);
           var cell1 = row.insertCell(0);
           var cell2 = row.insertCell(1);
           cell1.innerHTML = item.nome;
           cell2.innerHTML = item.quantidade;
-        })
+        });
       });
     </script>
   </body>
@@ -69,4 +76,5 @@
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"
   ></script>
+  <link href="../assets/fontawesome/css/all.min.css" rel="stylesheet" />
 </html>
