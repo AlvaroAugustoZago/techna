@@ -1,4 +1,5 @@
 [Desktop Entry]
+Name= Techna
+Exec= xterm -hold -e "/home/pi/antena-service/techna/view/view.sh"
+Terminal=false
 Type=Application
-Name=Personal File
-Exec=/home/pi/.config/nvm/versions/node/v17.1.0/bin/npm run start
