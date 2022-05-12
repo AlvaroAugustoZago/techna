@@ -46,6 +46,7 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
       saidos.forEach((tag) => {
         tag.enviar('S');
         this.gtplanService.send(TagGtplan.of(tag));
+        this.repository.save(tag);
       });
 
       const entrada = await this.repository.find({
@@ -58,6 +59,7 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
       entrada.forEach((tag) => {
         tag.enviar('E');
         this.gtplanService.send(TagGtplan.of(tag));
+        this.repository.save(tag);
       });
     });
     // setTimeout(this.cicloChecagem, toMs(30));
