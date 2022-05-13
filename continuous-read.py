@@ -16,7 +16,7 @@ from chafon_rfid.response import G2_TAG_INVENTORY_STATUS_MORE_FRAMES
 from chafon_rfid.transport import TcpTransport
 from chafon_rfid.transport_serial import SerialTransport
 from chafon_rfid.uhfreader288m import (
-    G2_TAG_INVENTORY_PARAM_ANTENNA_1, G2_TAG_INVENTORY_PARAM_ANTENNA_2, 
+    G2_TAG_INVENTORY_PARAM_ANTENNA_1, G2_TAG_INVENTORY_PARAM_ANTENNA_4, 
     G2InventoryCommand, G2InventoryResponseFrame
 )
 TCP_PORT = 6000
@@ -109,7 +109,7 @@ def read_tags(power, buzzerEnabled, seconds):
     try:
         set_answer_mode_reader_288m(transport)
         get_inventory_cmd = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1)
-        get_inventory_cmd2 = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_2)
+        get_inventory_cmd2 = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4)
         frame_type = G2InventoryResponseFrame
         set_power(transport, power)
         set_buzzer_enabled(transport, buzzerEnabled)

@@ -57,6 +57,7 @@ ipcMain.on('GPIO', (event, arg) => {
       win.webContents.send('fechar-modal', null);
       return;
     }
+    win.webContents.send('porta-aberta', null);    
     const interval = setInterval(() => {
       if (statusPorta == PortaStatus.OFF) {
         clearInterval(interval);

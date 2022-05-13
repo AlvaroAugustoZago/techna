@@ -6,11 +6,12 @@
 
   <body>
     <div class="d-flex flex-row">
-      <div class="p-2" style="height: 37.5em">
+      <div class="p-2" style="height: fit-content; ">
         <div
-          class="btn-group-vertical ml-4 mt-4 teclado"
+          class="btn-group-vertical ml-4 teclado"
           role="group"
           aria-label="Basic example"
+          style="margin-top: -10px;"
         >
           <div class="btn-group">
             <div
@@ -88,7 +89,7 @@
               3
             </button>
           </div>
-          <div class="btn-group" style="padding-bottom: 1em">
+          <div class="btn-group">
             <button
               type="button"
               class="btn btn-outline-secondary py-3 botao"
@@ -109,11 +110,11 @@
           </div>
         </div>
       </div>
-      <div class="p-2">
+      <div class="p-2" style="height: fit-content; ">
         <div class="d-flex flex-column mt-4" style="margin-left: 0.5rem">
           <div id="MyClockDisplay" class="clock" onload="showTime()"></div>
 
-          <div class="d-flex flex-row" style="margin-top: 4em">
+          <div class="d-flex flex-row" style="margin-top: 1.9em">
             <div class="p-2">
               <button
                 type="button"
@@ -141,9 +142,9 @@
         </div>
         <div
           class="d-flex align-items-end flex-column"
-          style="margin-top: 1.5em; width: 27.5em"
+          style="margin-top: 4%; width: 27.5em;padding-right: 1em;"
         >
-          <img src="./assets/logo_techna.png" style="height: 6em" />
+          <img src="./assets/logo_techna.png" style="height: 7.5em" />
         </div>
         <div class="text-center form-control-lg mb-2 code">
           <div class="d-flex flex-row justify-content-evenly">
@@ -178,7 +179,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg"> 
       <div class="modal-content" style="height: 17em;width: 25em;margin-left: 15em;background-color: green;color: white;">
         <div class="modal-body">
-          <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;"><span style="padding-left: 0.4em;"> Porta </span> Liberada!</h1>
+          <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;" id="status-porta"><span style="padding-left: 0.4em;"> Porta </span> Liberada!</h1>
         </div>
       </div>
     </div>
@@ -243,10 +244,13 @@
       
 
       socket.on('authorized', (data) => {
+        var porta = document.getElementById('status-porta')
+        porta.innerHTML = '<span style="padding-left: 0.4em;"> Porta </span> Liberada!'
         const modalAutorizado = new bootstrap.Modal(
           document.getElementById('newInstallModal'),
           { backdrop: 'static', keyboard: false },
         );
+        
         modalAutorizado.show();
         apagaSenha()
         ipcRenderer.send('GPIO', 'ON');
@@ -260,8 +264,12 @@
           modal.toggle();
       })
 
+      ipcRenderer.on('porta-aberta', () => {
+        var porta = document.getElementById('status-porta')
+        porta.innerHTML = '<span style="padding-left: 0.4em;"> Porta </span> Aberta!'
+      })
       ipcRenderer.on('porta-fechada', () => {
-        socket.emit('porta-fechada');
+        socket.emit('porta-fechada', null);
       })
 
       socket.on('unauthorized', (data) => {

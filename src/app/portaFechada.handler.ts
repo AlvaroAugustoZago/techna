@@ -31,6 +31,7 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
   ) {}
 
   async execute(cmd: PortaFechada) {
+    console.log("porta-fechada");
     const configuracao: Configuracao =
       await this.configuracaoRepository.findOne();
 

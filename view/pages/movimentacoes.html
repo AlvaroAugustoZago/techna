@@ -11,7 +11,7 @@
     <button class="botao" onclick="history.back()">
       <i class="fa-solid fa-arrow-left"></i></button
     ><br />
-
+    <div class="container">
     <table class="table" id="produtos">
       <thead>
         <tr>
@@ -22,10 +22,9 @@
         </tr>
       </thead>
       <tbody>
-      
       </tbody>
     </table>
-
+</div>
     
     <script
     src="https://cdn.socket.io/4.3.2/socket.io.min.js"
@@ -63,16 +62,21 @@
       -webkit-box-shadow: -9px 11px 36px 3px rgba(0, 0, 0, 0.61);
       box-shadow: -9px 11px 36px 3px rgba(0, 0, 0, 0.61);
       margin: 13px;
-      width: 4em;
-      height: 4em;
+      width: 7em;
+      height: 7em;
       border-top-left-radius: 42px;
       border-top-right-radius: 42px;
       border-bottom-left-radius: 42px;
       border-bottom-right-radius: 42px;
+      margin-bottom: 3%;
     }
 
     .fa-solid {
       color: white;
+    }
+    th {
+      color: white;
+      font-size: larger;
     }
   </style>
  

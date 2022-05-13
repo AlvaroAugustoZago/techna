@@ -24,10 +24,12 @@ export class GetEstoqueHandler implements ICommandHandler<GetEstoque> {
     for (const item of estoque) {
       const codigo: string = item.epc.substring(13, 17);
       if (itens.some((item) => item.codigo === codigo)) return;
-      const produto = await this.produtoRepository.find({
-        where: { codigo },
-      });
-      itens.push({ codigo, nome: produto[0].nome, quantidade: produto.length });
+      // const produto = await this.produtoRepository.find({
+      //   where: { codigo },
+      // });
+      //produto[0].nome
+      // produto.length
+      itens.push({ codigo, nome: "", quantidade: 0 });
     }
 
 

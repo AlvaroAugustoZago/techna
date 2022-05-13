@@ -3,8 +3,7 @@ body {
 }
 
 .teclado {
-    height: 91%;
-    background-color: RGB( 65,92,186);
+    height: 69%;
 }
 span {
     display: block;
@@ -36,6 +35,12 @@ span {
     font-family: Tahoma;
     font-size: 2em;
     background-color: RGB( 65,92,186);
+    height: 3em;
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white
 }
 
 .botao {
@@ -61,11 +66,13 @@ span {
     -webkit-box-shadow: inset -9px 11px 20px 3px rgba(255,255,255,0.52); 
     box-shadow: inset -9px 11px 20px 3px rgba(255,255,255,0.52);
     width: 6em !important;
-    height: 3.9em; 
+    height: 5.9em; 
+    
     font-size: 2em;
     font-weight: bold;
-    padding-top: 1em;
+    padding-top: 2em;
     padding-bottom: 4em;
+    color: white
 }
 
 .clock {
@@ -78,7 +85,7 @@ span {
     
     margin-left: 0.14em;
     padding: 8px 3px;
-    font-family: Tahoma;
+    /* font-family: Tahoma; */
     font-size: 2em;
     background-color: RGB( 65,92,186);
 
