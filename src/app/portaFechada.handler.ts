@@ -7,6 +7,7 @@ import { TagGtplan } from 'src/infra/gtplan/tag';
 import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 import { PortaFechada } from './cmd/portaFechada.cmd';
 import { StopServer } from './cmd/stop-server.cmd';
+import { plainToClass } from 'class-transformer';
 
 function toMs(sec: number) {
   return sec * 1000;
@@ -21,6 +22,8 @@ async function sleep(time, fn, ...args) {
 
 @CommandHandler(PortaFechada)
 export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
+  private tagsEstoque: Array<Tag> = [];
+
   constructor(
     @Inject('SERVICO_REPOSITORY')
     private repository: Repository<Tag>,
@@ -31,46 +34,57 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
   ) {}
 
   async execute(cmd: PortaFechada) {
-    console.log("porta-fechada");
     const configuracao: Configuracao =
       await this.configuracaoRepository.findOne();
 
-    sleep(toMs(configuracao.tempoEspera), this.cicloChecagem.bind(configuracao)).then(async () => {
+    sleep(
+      toMs(configuracao.tempoEspera),
+      () => this.cicloChecagem(configuracao),
+    ).then(async () => {
       const minutes = new Date().getTime() - 10 * 60000;
-      const saidos = await this.repository.find({
-        where: {
-          dataUltimaLeitura: LessThan(minutes),
-          dataEnvioGtplan: Not(0),
-        },
-      });
+      const baseQuery = await this.repository
+        .createQueryBuilder('tag')
+        .select(['*'])
+        .where('tag.dataEnvioGtplan is null');
 
-      saidos.forEach((tag) => {
-        tag.enviar('S');
-        this.gtplanService.send(TagGtplan.of(tag));
-        this.repository.save(tag);
-      });
+      const saidos = await baseQuery
+        .andWhere(`tag.dataUltimaLeitura < ${minutes}`)
+        .getRawMany();
 
-      const entrada = await this.repository.find({
-        where: {
-          dataUltimaLeitura: MoreThan(minutes),
-          dataEnvioGtplan: Not(0),
-        },
-      });
+      this.tagsEstoque.push(
+        ...saidos
+          .map((tag) => plainToClass(Tag, tag))
+          .map((tag) => {
+            tag.enviar('S');
+            return tag;
+          }),
+      );
 
-      entrada.forEach((tag) => {
-        tag.enviar('E');
-        this.gtplanService.send(TagGtplan.of(tag));
-        this.repository.save(tag);
-      });
+      const entrada = await baseQuery
+        .andWhere(`tag.dataUltimaLeitura > ${minutes}`)
+        .getRawMany();
+
+      this.tagsEstoque.push(
+        ...entrada
+          .map((tag) => plainToClass(Tag, tag))
+          .map((tag) => {
+            tag.enviar('E');
+            return tag;
+          }),
+      );
+      await this.repository.save(this.tagsEstoque);
+
+      this.gtplanService
+        .sendMany(this.tagsEstoque.map((tag) => TagGtplan.of(tag)))
+        .subscribe();
     });
     // setTimeout(this.cicloChecagem, toMs(30));
     // Fecho a porta -> espero 30s -> rodo ciclo de checagem -> 2s -> atualiza hora leitura -> se >= 10 e não foi enviado sai
     //                                                                                      -> se ele nao tiver envia como entrada
   }
 
-  async cicloChecagem(configuracao: Configuracao) {
-
-    sleep(toMs(configuracao.tempoChecagem), () =>
+  async cicloChecagem({tempoChecagem}: Configuracao) {
+    sleep(toMs(tempoChecagem), () =>
       this.commandBus.execute(new StopServer()),
     );
     // setTimeout(() => {

@@ -11,7 +11,7 @@ export class Tag {
   @Column( {default: 0, type: 'bigint'})
   dataUltimaLeitura: string;
 
-  @Column( {default: 0, type: 'bigint'})
+  @Column( {default: null, type: 'bigint'})
   dataEnvioGtplan: string;
 
   @Column( {default: '', type: 'varchar'})
