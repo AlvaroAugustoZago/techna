@@ -22,12 +22,17 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     const tagDb: Optional<Tag> = Optional.ofNullable(
       await this.repository.findOne(command.tag),
     );
-
-    const tagMovimentada = tagDb.orElseGet(() => tag);
-    tagMovimentada.enviar('E');
     
-    this.repository.save(tagMovimentada);
-    this.gtplanService.send(TagGtplan.of(tagMovimentada));    
+    tagDb.ifPresentOrElse(tag => {
+      tag.movimentar();
+      this.repository.save(tag);
+
+    }, () => {
+      tag.enviar('E');
+      this.repository.save(tag);
+      this.gtplanService.send(TagGtplan.of(tag));    
+  
+    });
 
   }
 }

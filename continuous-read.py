@@ -146,14 +146,12 @@ def read_tags(power, buzzerEnabled, seconds):
                             rssi_values[tag_id] = tag.rssi        
                     stringTag = str(tag_id)+','+ str(tag_counts.get(tag_id, 1))+','+str(rssi_values.get(tag_id))+ ','+ str(tag.antenna_num)+','+ str(tag.readTime)+','+str(inventory_status)
                     sio.emit('tag', stringTag, namespace='/rfid')
-        # except Exception as e:
-        #     print(e)
-        #     on_stop(None)
-        #     startup(defaultData)
-        #     continue
-        except socket.error:
-            print('Unable to connect to reader')
+        except Exception as e:
+            socket.emit('erro', null)
             continue
+        # except socket.error:
+        #     print('Unable to connect to reader')
+        #     continue
         time.sleep(0)
     transport.close()    
 

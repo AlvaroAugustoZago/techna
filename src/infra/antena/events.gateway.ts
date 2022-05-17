@@ -32,6 +32,11 @@ export class AntenaGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     this.eventBus.publish(new TagLida(tag, rssi, Number(antena), count, readTime));
   }
 
+  @SubscribeMessage('erro')
+  erro(): void {
+    // this.eventBus.publish(new TagLida(tag, rssi, Number(antena), count, readTime));
+  }
+
   afterInit(server: Server) {
     console.log('Initialised!');
   }

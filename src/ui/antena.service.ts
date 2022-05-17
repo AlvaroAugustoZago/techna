@@ -29,21 +29,19 @@ export class TasksService {
             const isSaida = (tag: Tag) => {
                 var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
                 var minutes = Math.floor(delta / 60) % 60;
-                return (minutes >= 2)
+                console.log(tag.epc, minutes)
+                return (minutes >= 3)
             }
-            this.repository.find(
-                {
-                    where:{
-                        dataEnvioGtplan: IsNull(),
-                        movimento: 'E'
+            this.repository.find().then(allTags => {
+                // const allTagsSaida = allTags.filter(isSaida)
+                // console.log(allTags.length, allTagsSaida.length)
+                for (var tag of allTags) {
+                    if (isSaida(tag)){
+                        tag.movimentar();
+                        tag.enviar('S');
+                        this.repository.save(tag);
+                        this.gtplanService.send(TagGtplan.of(tag));
                     }
-                }
-            ).then(allTags => {
-                const allTagsSaida = allTags.filter(isSaida)
-                for (var tagSaida of allTagsSaida) {
-                    tagSaida.enviar('S');
-                    this.repository.save(tagSaida);
-                    this.gtplanService.send(TagGtplan.of(tagSaida));   
                 }           
             });
 
