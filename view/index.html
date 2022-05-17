@@ -195,6 +195,20 @@
       </div>
     </div>
 
+    <div id="loading" class="overlay">
+
+      <div class="overlay-content">
+        <div class="d-flex justify-content-center">
+          <div class="spinner-border" style="width: 3rem; height: 3rem; color: white" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div><br>
+        
+        </div>
+        <h1 style="margin-top:10%; color:white">Processando Leitura</h1>
+      </div>
+    
+    </div>
+
     <script
       src="https://cdn.socket.io/4.3.2/socket.io.min.js"
       integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
@@ -204,8 +218,11 @@
     <script src="./dist/renderer.js"></script>
     <script>
       var socket = io('http://localhost:3000/view');
-      const { ipcRenderer } = require('electron');
+      const { ipcRenderer, electron } = require('electron');
       let password = '';
+      window.onload = () => {
+        // ipcRenderer.send('start');
+      }
       function start() {
         socket.emit('start', [password]);
       }
@@ -242,6 +259,16 @@
         timeSenha =setTimeout(apagaSenha, 5000);
       }
       
+      function addLoading() {
+        const loading = document.getElementById('loading');
+        loading.style.width = '100%';
+      }
+
+      function removeLoading() {
+        const loading = document.getElementById('loading');
+        loading.style.width = '0%';
+      }
+
 
       socket.on('authorized', (data) => {
         var porta = document.getElementById('status-porta')
@@ -254,8 +281,6 @@
         modalAutorizado.show();
         apagaSenha()
         ipcRenderer.send('GPIO', 'ON');
-        //timer
-       
 
       });
       ipcRenderer.on('fechar-modal', (event, message) => {
@@ -269,9 +294,20 @@
         porta.innerHTML = '<span style="padding-left: 0.4em;"> Porta </span> Aberta!'
       })
       ipcRenderer.on('porta-fechada', () => {
+        console.log('porta fechada')
+
+        var myModal = document.getElementById('newInstallModal')
+        var modal = bootstrap.Modal.getInstance(myModal) 
+        modal.hide();
+        addLoading();
+        ipcRenderer.send('GPIO', 'OFF');
+        
         socket.emit('porta-fechada', null);
       })
 
+      socket.on('fechar-loading', () => {
+        removeLoading();
+      })
       socket.on('unauthorized', (data) => {
         var myModal = new bootstrap.Modal(
           document.getElementById('senhaInvalidaModal'),

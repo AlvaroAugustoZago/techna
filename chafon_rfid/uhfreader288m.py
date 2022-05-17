@@ -27,7 +27,7 @@ class G2InventoryCommand(ReaderCommand):
 
     def __init__(self, addr=0xFF, q_value=15, deliver_statistics=0, strategy=0, fast_id=0,
                  session=G2_TAG_INVENTORY_PARAM_SESSION_S0, mask_source=G2_TAG_INVENTORY_PARAM_MEMORY_EPC,
-                 target=G2_TAG_INVENTORY_PARAM_TARGET_A,    antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, scan_time=0x14):
+                 target=G2_TAG_INVENTORY_PARAM_TARGET_A, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, scan_time=0x14):
         # TODO check q_value in range 0 ~ 15, session 0 ~ 3
         mask_data = [0x00, 0x00, 0x00]
         q_value_byte = (deliver_statistics << 7) + (strategy << 6) + (fast_id << 5) + q_value
@@ -65,12 +65,12 @@ class G2InventoryResponseFrame(ReaderResponseFrame):
 
     def get_tag(self):
         tag_data_prefix_and_num_tags_bytes = self.tag_data_prefix_bytes + 1
-        if len(self.data) > tag_data_prefix_and_num_tags_bytes:
-            tag_data = TagData(self.data[self.tag_data_prefix_bytes:], prefix_bytes=self.tag_prefix_bytes, suffix_bytes=self.tag_suffix_bytes)
-            for data_item in tag_data.get_tag_data():
-                epc_value = data_item[1]
-                rssi = data_item[2][0]
-                yield Tag(epc_value, antenna_num=self.antenna, rssi=rssi)
+        # if len(self.data) > tag_data_prefix_and_num_tags_bytes:
+        tag_data = TagData(self.data[self.tag_data_prefix_bytes:], prefix_bytes=self.tag_prefix_bytes, suffix_bytes=self.tag_suffix_bytes)
+        for data_item in tag_data.get_tag_data():
+            epc_value = data_item[1]
+            rssi = data_item[2][0]
+            yield Tag(epc_value, antenna_num=self.antenna, rssi=rssi)
 
 
 class G2InventoryResponse(BaseG2InventoryResponse):

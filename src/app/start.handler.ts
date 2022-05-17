@@ -10,7 +10,6 @@ import { StartServer } from './cmd/start-server.cmd';
 export class StartServerHandler implements ICommandHandler<StartServer> {
   constructor(
     private readonly viewGateway: ViewGateway,
-    private readonly antenaGateway: AntenaGateway,
     @Inject('CONFIG_REPOSITORY')
     private repository: Repository<Configuracao>,
   ) {}
@@ -19,14 +18,8 @@ export class StartServerHandler implements ICommandHandler<StartServer> {
     const config: Configuracao =  await this.repository.findOne();
 
     if (command.password == config.password) {
-      this.viewGateway.server.emit('authorized', null);
+      if (command.isUI) this.viewGateway.server.emit('authorized', null);
       
-      this.antenaGateway.server.emit('start', [
-        config.port,
-        parseInt(config.dbm),
-        config.bip,
-        config.seconds,
-      ]);
       return;
     }
 

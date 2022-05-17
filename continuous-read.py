@@ -47,7 +47,7 @@ transport = None
 response_times = []
 tag_counts = {}
 rssi_values = {}
-
+defaultData = {}
 
 if __name__ == "__main__":    
     sio = socketio.Client(logger=True, engineio_logger=True) #logger=True, engineio_logger=True
@@ -69,17 +69,26 @@ def disconnect():
     global running
     running = False
 
-@sio.on('start', namespace='/rfid')
-def on_start(data):
+
+def startup(data):
     global transport
-    print(data[0])
+    global running
+    running = True
     transport = getTransport(data[0])
     read_tags(data[1], data[2], data[3])
 
+@sio.on('start', namespace='/rfid')
+def on_start(data):
+    global defaultData
+    defaultData = data
+    startup(data)
+
 @sio.on('stop', namespace='/rfid')
 def on_stop(data):
-    global transport
-    transport.close()
+    # global transport
+    global running
+    running = False
+    # transport.close()
 
 @sio.on('limpar', namespace='/rfid')
 def on_limpar(data):
@@ -92,24 +101,16 @@ def isSerial(reader_addr):
     return reader_addr.startswith('/') or reader_addr.startswith('COM')
 
 def getTransport(reader_addr):
-    print(isSerial(reader_addr))
     if (isSerial(reader_addr)):
-        return SerialTransport(device=reader_addr)
+        return SerialTransport(device=reader_addr, baud_rate=38400)
     return TcpTransport(reader_addr, reader_port=TCP_PORT)
-
-
-def startup(data):
-    global transport
-    transport = getTransport(data[0])
-    read_tags(data[1], data[2], data[3])
-
 
 
 def read_tags(power, buzzerEnabled, seconds):
     try:
         set_answer_mode_reader_288m(transport)
-        get_inventory_cmd = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1)
-        get_inventory_cmd2 = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4)
+        get_inventory_cmd = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, session=0x02 ) 
+        get_inventory_cmd2 = G2InventoryCommand(q_value=4, antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4, session=0x02 )
         frame_type = G2InventoryResponseFrame
         set_power(transport, power)
         set_buzzer_enabled(transport, buzzerEnabled)
@@ -126,8 +127,9 @@ def read_tags(power, buzzerEnabled, seconds):
                 resp = frame_type(transport.read_frame())
                 inventory_status = resp.result_status
                 for tag in resp.get_tag():
+                    
                     tag_id = tag.epc.hex()
-
+                    
                     tag_counts[tag_id] = tag_counts.get(tag_id, 0) + 1
                     if is_marathon_tag(tag):
                         boat_num = (tag.epc.lstrip(bytearray([0]))).decode('ascii')
@@ -135,8 +137,6 @@ def read_tags(power, buzzerEnabled, seconds):
                         rssi = tag.rssi
                         if verbose:
                           print('{0} {1} {2}'.format(boat_num, boat_time, rssi))
-                        if appender is not None:
-                          appender.add_row([boat_num, boat_time, '', ''])
                     else:
                         if verbose:
                             print("Non-marathon tag 0x%s" % (tag.epc.hex()))
@@ -144,16 +144,18 @@ def read_tags(power, buzzerEnabled, seconds):
                             if tag_id not in rssi_values:
                                 rssi_values[tag_id] = 0
                             rssi_values[tag_id] = tag.rssi        
-                    ##print('  {}: {} times{}'.format(tag_id, tag_counts[tag_id], rssi_values and ', average RSSI: %.2f' % (statistics.mean(rssi_values[tag_id]),) or ''))
-                    #print(tag.antenna_num)
                     stringTag = str(tag_id)+','+ str(tag_counts.get(tag_id, 1))+','+str(rssi_values.get(tag_id))+ ','+ str(tag.antenna_num)+','+ str(tag.readTime)+','+str(inventory_status)
-                    ##print(stringTag)
                     sio.emit('tag', stringTag, namespace='/rfid')
+        # except Exception as e:
+        #     print(e)
+        #     on_stop(None)
+        #     startup(defaultData)
+        #     continue
         except socket.error:
             print('Unable to connect to reader')
             continue
-        time.sleep(seconds)
+        time.sleep(0)
     transport.close()    
 
-##if __name__ == "__main__":
-##    startup(['/dev/ttyUSB0',12,True,0.00])
+# if __name__ == "__main__":
+#     startup(['/dev/ttyUSB0',12,True,0.00])

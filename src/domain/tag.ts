@@ -21,6 +21,10 @@ export class Tag {
     return this.epc.substring(0, 8)
   }
 
+  get codigo(): string {
+    return this.epc.substring(13, 17);
+  }
+
   get lote(): string {
     return this.epc.substring(9,12)
   }
@@ -41,6 +45,7 @@ export class Tag {
 
     tag.epc = epc;
     tag.dataCriacao = new Date().getTime().toString();
+    tag.movimentar();
     
     return tag;
   }

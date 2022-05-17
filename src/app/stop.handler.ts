@@ -7,6 +7,6 @@ export class StopServerHandler implements ICommandHandler<StopServer> {
   constructor(private readonly antenaGateway: AntenaGateway) {}
 
   async execute(command: StopServer) {
-    this.antenaGateway.server.emit('stop');
+    this.antenaGateway.server.emit('stop', null);
   }
 }

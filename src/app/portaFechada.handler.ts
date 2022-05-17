@@ -8,6 +8,9 @@ import { LessThan, MoreThan, Not, Repository } from 'typeorm';
 import { PortaFechada } from './cmd/portaFechada.cmd';
 import { StopServer } from './cmd/stop-server.cmd';
 import { plainToClass } from 'class-transformer';
+import { StartServer } from './cmd/start-server.cmd';
+import { AntenaGateway } from 'src/infra/antena/events.gateway';
+import { ViewGateway } from 'src/ui/events.gateway';
 
 function toMs(sec: number) {
   return sec * 1000;
@@ -31,64 +34,125 @@ export class PortaFechadaHandler implements ICommandHandler<PortaFechada> {
     private configuracaoRepository: Repository<Configuracao>,
     private readonly commandBus: CommandBus,
     private readonly gtplanService: GtplanService,
+    private readonly antenaGateway: AntenaGateway,
+    private readonly viewGateway: ViewGateway,
   ) {}
 
   async execute(cmd: PortaFechada) {
     const configuracao: Configuracao =
       await this.configuracaoRepository.findOne();
+    
+    this.antenaGateway.server.emit('start', [
+      configuracao.port,
+      parseInt(configuracao.dbm),
+      configuracao.bip,
+      configuracao.seconds,
+    ]);
 
-    sleep(
-      toMs(configuracao.tempoEspera),
-      () => this.cicloChecagem(configuracao),
-    ).then(async () => {
-      const minutes = new Date().getTime() - 10 * 60000;
-      const baseQuery = await this.repository
-        .createQueryBuilder('tag')
-        .select(['*'])
-        .where('tag.dataEnvioGtplan is null');
+    // sleep(toMs(2), async () => {
+    //   this.commandBus.execute(new StopServer());
+    //   const tags = await this.repository.find();
+    //   const tagsSaida = tags.filter((tag: Tag) => {
+    //     var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
+    //     var minutes = Math.floor(delta / 60) % 60;
+    //     return (minutes >= 2) 
+    //   }).map((tag: Tag) => {
+    //     tag.enviar('S')
+    //     return tag;
+    //   });
+      
+    //   await this.repository.save(tagsSaida)
+    //   this.gtplanService.sendMany(tagsSaida.map(TagGtplan.of)).subscribe()
 
-      const saidos = await baseQuery
-        .andWhere(`tag.dataUltimaLeitura < ${minutes}`)
-        .getRawMany();
+    //   // for (const tag of tags) {
+    //   //   var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
+    //   //   var minutes = Math.floor(delta / 60) % 60;
+    //   //   if (minutes >= 2) {
+    //   //     ;
+    //   //     this.gtplanService.send(TagGtplan.of(tag));
+    //   //   }
+    //   // }
+    //   this.viewGateway.server.emit('fechar-loading')
+    // })
+    // sleep(
+    //   toMs(configuracao.tempoEspera),
+    //   () => this.cicloChecagem(configuracao),
+    // ).then(() => {
+    //   sleep(
+    //     toMs(60),
+    //     () => this.cicloChecagem(configuracao),
+    //   ).then(async () => {
+        
+    //     const allTags = await this.repository
+    //     .createQueryBuilder('tag')
+    //     .select(['*'])
+    //     .where('tag.dataEnvioGtplan is null').getRawMany();
 
-      this.tagsEstoque.push(
-        ...saidos
-          .map((tag) => plainToClass(Tag, tag))
-          .map((tag) => {
-            tag.enviar('S');
-            return tag;
-          }),
-      );
+    //     this.tagsEstoque.push(...allTags.map((tag) => plainToClass(Tag, tag)).filter(tag => {
+    //       var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
+    //       var minutes = Math.floor(delta / 60) % 60;
+    //       return minutes > 0.5;
+    //     }).map((tag) => { 
+    //       tag.enviar('S');
+    //       return tag;
+    //     }))
 
-      const entrada = await baseQuery
-        .andWhere(`tag.dataUltimaLeitura > ${minutes}`)
-        .getRawMany();
+    //     this.tagsEstoque.push(...allTags.map((tag) => plainToClass(Tag, tag)).filter(tag => {
+    //       var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
+    //       var minutes = Math.floor(delta / 60) % 60;
+    //       return minutes < 0.5;
+    //     }).map((tag) => { 
+    //       tag.enviar('E');
+    //       return tag;
+    //     }))
 
-      this.tagsEstoque.push(
-        ...entrada
-          .map((tag) => plainToClass(Tag, tag))
-          .map((tag) => {
-            tag.enviar('E');
-            return tag;
-          }),
-      );
-      await this.repository.save(this.tagsEstoque);
+    //     await this.repository.save(this.tagsEstoque);
 
-      this.gtplanService
-        .sendMany(this.tagsEstoque.map((tag) => TagGtplan.of(tag)))
-        .subscribe();
-    });
-    // setTimeout(this.cicloChecagem, toMs(30));
+
+
+    //   // const saidos = await this.repository
+    //   // .createQueryBuilder('tag')
+    //   // .select(['*'])
+    //   // .where('tag.dataEnvioGtplan is null')
+    //   //   .andWhere(`${dataLimite} > tag.dataUltimaLeitura `)
+    //   //   .getRawMany();
+      
+    //   // this.tagsEstoque.push(
+    //   //   ...saidos
+    //   //     .map((tag) => plainToClass(Tag, tag))
+    //   //     .map((tag) => { 
+    //   //       tag.enviar('S');
+    //   //       return tag;
+    //   //     }),
+    //   // );
+
+    //   // const entrada = await this.repository
+    //   // .createQueryBuilder('tag')
+    //   // .select(['*'])
+    //   // .where('tag.dataEnvioGtplan is null')
+    //   //   .andWhere(`${dataLimite} < tag.dataUltimaLeitura `)
+    //   //   .getRawMany();
+
+    //   // this.tagsEstoque.push(
+    //   //   ...entrada
+    //   //     .map((tag) => plainToClass(Tag, tag))
+    //   //     .map((tag) => {
+    //   //       tag.enviar('E');
+    //   //       return tag;
+    //   //     }),
+    //   // );
+     
+    //   });
+
+    // });
     // Fecho a porta -> espero 30s -> rodo ciclo de checagem -> 2s -> atualiza hora leitura -> se >= 10 e não foi enviado sai
     //                                                                                      -> se ele nao tiver envia como entrada
   }
 
-  async cicloChecagem({tempoChecagem}: Configuracao) {
-    sleep(toMs(tempoChecagem), () =>
+  async cicloChecagem(configuracao: Configuracao) {
+    this.commandBus.execute(new StartServer(configuracao.password, false))
+    sleep(toMs(configuracao.tempoChecagem), () =>
       this.commandBus.execute(new StopServer()),
     );
-    // setTimeout(() => {
-    //   this.commandBus.execute(new StopServer());
-    // }, toMs(2));
   }
 }
