@@ -23,11 +23,9 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
       await this.repository.findOne(command.tag),
     );
 
-    tagDb.ifPresent((tag: Tag) => tag.movimentar());
-    
     const tagMovimentada = tagDb.orElseGet(() => tag);
     tagMovimentada.enviar('E');
-    console.log(tagMovimentada.movimento);
+    
     this.repository.save(tagMovimentada);
     this.gtplanService.send(TagGtplan.of(tagMovimentada));    
 

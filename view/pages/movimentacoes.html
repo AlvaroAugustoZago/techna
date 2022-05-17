@@ -39,13 +39,13 @@
     var socket = io('http://localhost:3000/view');
     window.onload = () => socket.emit('movimentacoes', null);
 
-    const interval = setInterval(() => {
-      socket.emit('porta-fechada',null);
-      setTimeout(() => {
-        socket.emit('stop', null);
-        socket.emit('movimentacoes', null)
-      }, 20000);
-    }, 60000);
+    // const interval = setInterval(() => {
+    //   socket.emit('porta-fechada',null);
+    //   setTimeout(() => {
+    //     socket.emit('stop', null);
+    //     socket.emit('movimentacoes', null)
+    //   }, 20000);
+    // }, 60000);
 
     // socket.on('update-movimentacoes', () => socket.emit('movimentacoes', null));
 
