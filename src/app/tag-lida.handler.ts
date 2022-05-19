@@ -25,12 +25,12 @@ export class TagLidaHandler implements IEventHandler<TagLida> {
     
     tagDb.ifPresentOrElse(tag => {
       tag.movimentar();
+      tag.enviar('E', false);
       this.repository.save(tag);
-
     }, () => {
-      tag.enviar('E');
+      tag.enviar('E', true);
       this.repository.save(tag);
-      this.gtplanService.send(TagGtplan.of(tag));    
+      // this.gtplanService.send(TagGtplan.of(tag));    
   
     });
 

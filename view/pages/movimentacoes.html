@@ -12,7 +12,7 @@
       <i class="fa-solid fa-arrow-left"></i></button
     ><br />
     <div class="container">
-    <div id="totalizador">0</div>
+    <div id="totalizador" class="totalizador">0</div>
     <table class="table" id="produtos">
       <thead>
         <tr>
@@ -56,6 +56,10 @@
       data.forEach(item => {
         if (document.getElementById(item.codigo)) {
           const row = document.getElementById(item.codigo);
+          row.style.color='white';
+          row.style.fontSize = 'larger';
+          row.style. fontWeight= 'Bold';
+
           const [,dataCriacao, ultimaMovimentacao, diff, movimento] = row.cells;
           dataCriacao.innerHTML = new Date(item.dataCriacao).toLocaleString();
           ultimaMovimentacao.innerHTML = new Date(item.ultimaMovimentacao).toLocaleString();
@@ -64,6 +68,9 @@
         } else {
           var row = table.insertRow(-1);
           row.setAttribute('id', item.codigo);
+          row.style.color='white';
+          row.style.fontSize = 'larger';
+          row.style. fontWeight= 'Bold';
 
           var cell1 = row.insertCell(0);
           var cell3 = row.insertCell(1);
@@ -88,6 +95,7 @@
   <style>
     body {
       background-color: RGB(96, 93, 246) !important;
+      color: white;
     }
     .botao {
       background-color: #333d50;
@@ -111,6 +119,11 @@
     th {
       color: white;
       font-size: larger;
+    }
+    .totalizador{
+      color: white;
+      font-size: larger;
+      font-weight: bold;
     }
   </style>
  

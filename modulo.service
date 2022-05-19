@@ -4,7 +4,7 @@ After=network.target antena.service
 
 [Service]
 WorkingDirectory=/home/pi/antena-service/techna
-ExecStart=/usr/bin/python3 continuous-read.py
+ExecStart=/usr/bin/python3 single-read.py
 User=pi
 Restart=on-failure
 RestartSec=5s

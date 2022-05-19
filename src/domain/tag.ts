@@ -36,9 +36,9 @@ export class Tag {
   movimentar() {
     this.dataUltimaLeitura = new Date().getTime().toString();
   }
-  enviar(movimento: string) { 
+  enviar(movimento: string, atualizarEnvio: boolean) { 
     this.movimento = movimento;
-    this.dataEnvioGtplan = new Date().getTime().toString();
+    if (atualizarEnvio) this.dataEnvioGtplan = new Date().getTime().toString();
   }
   public static of(epc: string): Tag {
     const tag: Tag = new Tag();
