@@ -18,6 +18,8 @@ import { GetMovimentacoesHandler } from './app/getMovimentacoes.handler';
 import { GetConfiguracoesHandler } from './app/getConfiguracoes.handler';
 import { PortaFechadaHandler } from './app/portaFechada.handler';
 import { LeituraConcluidaHandler } from './app/leitura-completa.handler';
+import { Log } from './domain/log';
+import { PortaAbertaHandler } from './app/portaAberta.handler';
 
 export const CommandHandlers = [
   StartServerHandler,
@@ -27,6 +29,7 @@ export const CommandHandlers = [
   GetEstoqueHandler,
   GetMovimentacoesHandler,
   GetConfiguracoesHandler,
+  PortaAbertaHandler,
   PortaFechadaHandler,
   LeituraConcluidaHandler
 ];
@@ -51,6 +54,11 @@ export const EventHandlers = [TagLidaHandler];
     {
       provide: 'PRODUTO_REPOSITORY',
       useFactory: (connection: Connection) => connection.getRepository(Produto),
+      inject: ['DATABASE_CONNECTION'],
+    },
+    {
+      provide: 'LOG_REPOSITORY',
+      useFactory: (connection: Connection) => connection.getRepository(Log),
       inject: ['DATABASE_CONNECTION'],
     },
   ],

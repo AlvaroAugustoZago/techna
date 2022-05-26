@@ -34,7 +34,8 @@ function createWindow() {
       
   
       if (ultimoStatusPorta == PortaStatus.ON) {
-        console.log(ultimoStatusPorta, statusPorta);
+        win.webContents.send('porta-aberta', null);
+
         if (statusPorta == PortaStatus.OFF) {
           // clearInterval(interval);
           // win.webContents.send('fechar-modal', null);
@@ -96,7 +97,7 @@ ipcMain.on('GPIO', (event, arg) => {
         win.webContents.send('fechar-modal', null);
         return;
       }
-      win.webContents.send('porta-aberta', null);
+      // win.webContents.send('porta-aberta', null);
     }, 3000);
   }
   // setTimeout(() => {
