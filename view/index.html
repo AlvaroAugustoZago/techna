@@ -289,6 +289,14 @@
           modal.toggle();
       })
 
+      ipcRenderer.on('show-modal', () => {
+        const modalAutorizado = new bootstrap.Modal(
+          document.getElementById('newInstallModal'),
+          { backdrop: false, keyboard: false },
+        );
+        modalAutorizado.show();
+      })
+
       ipcRenderer.on('porta-aberta', () => {
         var porta = document.getElementById('status-porta')
         porta.innerHTML = '<span style="padding-left: 0.4em;"> Porta </span> Aberta!'

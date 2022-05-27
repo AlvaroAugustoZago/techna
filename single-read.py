@@ -32,7 +32,6 @@ def set_buzzer_enabled(transport, buzzer_enabled):
 transport = None
 get_antenna_1 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, session=0x02)
 get_antenna_2 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4, session=0x02)
-tags = []
 
 def startup(data):
     global transport
@@ -47,6 +46,7 @@ def on_start(data):
 
 
 def read_tags():
+    tags = []
     transport.write(get_antenna_1.serialize())
     transport.write(get_antenna_2.serialize())
 

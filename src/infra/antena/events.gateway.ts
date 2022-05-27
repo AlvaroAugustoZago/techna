@@ -35,9 +35,9 @@ export class AntenaGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   
   @SubscribeMessage('leitura_completa')
   leituraCompleta(@MessageBody() data: Array<string>): void {
-    if (Array.isArray(data) && data.length) {
-      this.commandBus.execute(new LeituraConcluida());
-    }
+    // if (Array.isArray(data) && data.length) {
+    this.commandBus.execute(new LeituraConcluida());
+    // }
 
     for (let tag of data) {
       const [epc, rssi, antena] = tag.split(',');

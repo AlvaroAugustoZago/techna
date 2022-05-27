@@ -30,18 +30,20 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   setInterval(() => {
       ultimoStatusPorta = statusPorta;
-      statusPorta = led17.readSync();
-      
+      statusPorta = led17.readSync();      
   
       if (ultimoStatusPorta == PortaStatus.ON) {
-        win.webContents.send('porta-aberta', null);
-
         if (statusPorta == PortaStatus.OFF) {
-          // clearInterval(interval);
-          // win.webContents.send('fechar-modal', null);
           win.webContents.send('porta-fechada', null);
         }
       }
+      if (ultimoStatusPorta == PortaStatus.OFF) {
+        if (statusPorta == PortaStatus.ON) {
+          win.webContents.send('show-modal', null);
+          win.webContents.send('porta-aberta', null);  
+        }
+      }
+
   }, 1)
   // led17.watch((err: Error, value: number) => {
   //   if (err) throw err;

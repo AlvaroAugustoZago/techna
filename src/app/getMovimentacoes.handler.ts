@@ -22,7 +22,7 @@ export class GetMovimentacoesHandler
   async execute(command: GetMovimentacoes) {
     const tags = await this.repository.find();
     // const itens: Array<{ codigo: string; enviado: boolean; movimento: string }> = [];
-    const itens: Array<{ codigo: string; dataCriacao: number; ultimaMovimentacao: number; diff: number, movimento: string}> = [];
+    const itens: Array<{ codigo: string; dataCriacao: number; ultimaMovimentacao: number; diff: number, movimento: string, dataEnvio: string}> = [];
     for (const tag of tags) {
       // const codigo: string = tag.epc.substring(13, 17);
       
@@ -30,12 +30,12 @@ export class GetMovimentacoesHandler
       // const produto = await this.produtoRepository.find({
       //   where: { codigo },
       // });    
-      const {epc: codigo, dataCriacao, dataUltimaLeitura, movimento} = tag;
+      const {epc: codigo, dataCriacao, dataUltimaLeitura, movimento, dataEnvioGtplan: dataEnvio} = tag;
 
       var delta = Math.abs(Number(tag.dataUltimaLeitura) - new Date().getTime()) / 1000;
       var minutes = Math.floor(delta / 60) % 60;
 
-      itens.push({codigo, dataCriacao: Number(dataCriacao), ultimaMovimentacao: Number(dataUltimaLeitura), diff: minutes, movimento})
+      itens.push({codigo, dataCriacao: Number(dataCriacao), ultimaMovimentacao: Number(dataUltimaLeitura), diff: minutes, movimento, dataEnvio})
       // itens.push({ codigo: tag.epc, enviado: tag.dataEnvioGtplan != null, movimento: tag.movimento });
     }
 

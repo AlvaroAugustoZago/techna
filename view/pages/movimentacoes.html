@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Estoque</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="movimentacoes.css" />
   </head>
   <body>
     <button class="botao" onclick="history.back()">
@@ -20,9 +20,9 @@
           <th scope="col">Data Criação</th>
           <th scope="col">Ultimo Movimento</th>
           <th scope="col">Diff</th>
-          <!-- <th scope="col">Produto</th> 
-          <th scope="col">Enviado</th>-->
-          <th scope="col">Status</th> 
+          <!-- <th scope="col">Produto</th>-->
+          <th scope="col">Data Envio</th> 
+          <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
@@ -30,25 +30,93 @@
     </table>
 </div>
     
+<div
+class="modal"
+tabindex="-1"
+id="newInstallModal"
+aria-labelledby="settings"
+>
+<div class="modal-dialog modal-dialog-centered modal-lg"> 
+<div class="modal-content" style="height: 17em;width: 25em;margin-left: 15em;background-color: green;color: white;">
+  <div class="modal-body">
+    <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;" id="status-porta"><span style="padding-left: 0.4em;"> Porta </span> Liberada!</h1>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal" tabindex="-1" id="senhaInvalidaModal">
+<div class="modal-dialog modal-dialog-centered modal-lg"> 
+  <div class="modal-content" style="height: 17em;width: 25em;margin-left: 15em;background-color: red;color: white;">
+    <div class="modal-body">
+      <h1 style="padding-top: 1.3em;padding-left: 2em;font-size: xxx-large;"><span style="padding-left: 0.4em;">Senha</span> Invalida!</h1>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="loading" class="overlay">
+
+<div class="overlay-content">
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" style="width: 3rem; height: 3rem; color: white" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div><br>
+  
+  </div>
+  <h1 style="margin-top:10%; color:white">Processando Leitura</h1>
+</div>
+
+</div>
+
     <script
     src="https://cdn.socket.io/4.3.2/socket.io.min.js"
     integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
     crossorigin="anonymous"
   ></script>
   <script>
+    const { ipcRenderer, electron } = require('electron');
+
     var socket = io('http://localhost:3000/view');
     window.onload = () => socket.emit('movimentacoes', null);
 
-    // const interval = setInterval(() => {
-    //   socket.emit('porta-fechada',null);
-    //   setTimeout(() => {
-    //     socket.emit('stop', null);
-    //     socket.emit('movimentacoes', null)
-    //   }, 20000);
-    // }, 60000);
+    ipcRenderer.on('show-modal', () => {
+        const modalAutorizado = new bootstrap.Modal(
+          document.getElementById('newInstallModal'),
+          { backdrop: false, keyboard: false },
+        );
+        modalAutorizado.show();
+      })
+      ipcRenderer.on('porta-aberta', () => {
+        var porta = document.getElementById('status-porta')
+        porta.innerHTML = '<span style="padding-left: 0.4em;"> Porta </span> Aberta!'
+      })
+      ipcRenderer.on('porta-fechada', () => {
+        console.log('porta fechada')
 
-    // socket.on('update-movimentacoes', () => socket.emit('movimentacoes', null));
+        var myModal = document.getElementById('newInstallModal')
+        var modal = bootstrap.Modal.getInstance(myModal) 
+        modal.hide();
+        addLoading();
+        ipcRenderer.send('GPIO', 'OFF');
+        
+        socket.emit('porta-fechada', null);
+      })
 
+    
+      function addLoading() {
+        const loading = document.getElementById('loading');
+        loading.style.width = '100%';
+      }
+
+      function removeLoading() {
+        const loading = document.getElementById('loading');
+        loading.style.width = '0%';
+      }
+      socket.on('fechar-loading', () => {
+        removeLoading();
+      })
+  
     socket.on('movimentacoesAtuais', (data) => {
       var totalizador = document.getElementById("totalizador");
       totalizador.innerHTML = data.length;
@@ -60,11 +128,13 @@
           row.style.fontSize = 'larger';
           row.style. fontWeight= 'Bold';
 
-          const [,dataCriacao, ultimaMovimentacao, diff, movimento] = row.cells;
+          const [,dataCriacao, ultimaMovimentacao, diff, dataEnvio,movimento] = row.cells;
           dataCriacao.innerHTML = new Date(item.dataCriacao).toLocaleString();
           ultimaMovimentacao.innerHTML = new Date(item.ultimaMovimentacao).toLocaleString();
           diff.innerHTML = item.diff;
           movimento.innerHTML = item.movimento;
+          dataEnvio.innerHTML = new Date(Number(item.dataEnvio)).toLocaleString();
+
         } else {
           var row = table.insertRow(-1);
           row.setAttribute('id', item.codigo);
@@ -77,12 +147,15 @@
           var cell4 = row.insertCell(2);
           var cell5 = row.insertCell(3);
           var cell6 = row.insertCell(4);
+          var cell7 = row.insertCell(5);
 
           cell1.innerHTML = item.codigo;
           cell3.innerHTML = new Date(item.dataCriacao).toLocaleString();
           cell4.innerHTML = new Date(item.ultimaMovimentacao).toLocaleString();
           cell5.innerHTML = item.diff;
-          cell6.innerHTML = item.movimento;
+          console.log(item.dataEnvio)
+          cell6.innerHTML =  new Date(Number(item.dataEnvio)).toLocaleString();
+          cell7.innerHTML = item.movimento;
         }
         
         // cell2.innerHTML = item.nome;
