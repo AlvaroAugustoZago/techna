@@ -4,13 +4,14 @@ import { TagGtplan } from './tag';
 
 @Injectable()
 export class GtplanService {
-  private URL_BASE: string = 'https://restbus.gtplanqa.net/Erp_sku/';
+  private URL_BASE: string = 'https://restbus.gtplanqa.net/Erp_transaction_rfid/';
+
   private HEADERS = {
     'Content-Type': 'application/json',
     Authorization: `Basic ${new Buffer(
-      '5A503DE94A258CF3E8D59FE8ADA56F2F' +
+      '634E048B0B8D605B4D475040446FE529' +
         ':' +
-        'B59307FDACF7B2DB12EC4BD5CA1CABA8',
+        '43EC517D68B6EDD3015B3EDC9A11367B',
     ).toString('base64')}`,
   };
   constructor(private http: HttpService) {}
