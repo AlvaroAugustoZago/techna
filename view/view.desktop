@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name= Techna
-Exec= xterm -hold -e "/home/pi/antena-service/techna/view/view.sh"
+Exec= xterm -hold  -display :0 -e "/home/pi/antena-service/techna/view/view.sh"
 Terminal=false
 Type=Application

@@ -30,8 +30,8 @@ def set_buzzer_enabled(transport, buzzer_enabled):
     return run_command(transport, ReaderCommand(CF_SET_BUZZER_ENABLED, data=[buzzer_enabled and 1 or 0]))
 
 transport = None
-get_antenna_1 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, session=0x02)
-get_antenna_2 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4, session=0x02)
+get_antenna_1 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_1, session=0x02, target= 0x00)
+get_antenna_2 = G2InventoryCommand( antenna=G2_TAG_INVENTORY_PARAM_ANTENNA_4, session=0x02, target= 0x01)
 
 def startup(data):
     global transport
@@ -48,6 +48,23 @@ def on_start(data):
 def read_tags():
     tags = []
     transport.write(get_antenna_1.serialize())
+    # transport.write(get_antenna_2.serialize())
+
+    inventory_status = None
+    while inventory_status is None or inventory_status == G2_TAG_INVENTORY_STATUS_MORE_FRAMES:
+        g2_response = G2InventoryResponseFrame(transport.read_frame())
+        inventory_status = g2_response.result_status
+        
+        for tag in g2_response.get_tag():
+            tag_id = tag.epc.hex()
+            rssi = tag.rssi
+            tags.append(str(tag_id) + ','+str(rssi)+ ','+ str(tag.antenna_num))
+            print('Antenna %d: EPC %s, RSSI %s' % (tag.antenna_num, tag.epc.hex(), tag.rssi))
+        
+        # if (inventory_status == G2_TAG_INVENTORY_STATUS_COMPLETE):
+        #     print(tags)
+            # sio.emit('leitura_completa', tags, namespace='/rfid')
+    
     transport.write(get_antenna_2.serialize())
 
     inventory_status = None
@@ -62,7 +79,13 @@ def read_tags():
             print('Antenna %d: EPC %s, RSSI %s' % (tag.antenna_num, tag.epc.hex(), tag.rssi))
         
         if (inventory_status == G2_TAG_INVENTORY_STATUS_COMPLETE):
+            # print(tags)
             sio.emit('leitura_completa', tags, namespace='/rfid')
+    
+    
     print('%s tags found' % (len(tags)))
 
     transport.close()
+
+# if __name__ == "__main__":
+    # on_start(['/dev/ttyUSB0',27,True])

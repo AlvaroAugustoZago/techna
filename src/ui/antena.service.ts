@@ -19,7 +19,7 @@ export class TasksService {
         private readonly gtplanService: GtplanService,) {}
 
     // @Interval("timerReader",60000)
-    @Cron('* * * * *', {
+    @Cron('*/20 * * * * *', {
         name: 'timerReader',
       })
     startRead() {

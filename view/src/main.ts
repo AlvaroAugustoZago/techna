@@ -26,37 +26,31 @@ function createWindow() {
     width: 1024,
     frame: false,
   });
-
+  let quantasVezesTrocouPara1 = 0;
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   setInterval(() => {
       ultimoStatusPorta = statusPorta;
       statusPorta = led17.readSync();      
-  
-      if (ultimoStatusPorta == PortaStatus.ON) {
-        if (statusPorta == PortaStatus.OFF) {
+      
+      quantasVezesTrocouPara1+=1;
+      if (statusPorta == PortaStatus.OFF) {  
+        if (ultimoStatusPorta == PortaStatus.ON) {
+          console.log("porta-fechada")
           win.webContents.send('porta-fechada', null);
         }
       }
       if (ultimoStatusPorta == PortaStatus.OFF) {
         if (statusPorta == PortaStatus.ON) {
+          console.log("porta-aberta:", quantasVezesTrocouPara1)
           win.webContents.send('show-modal', null);
           win.webContents.send('porta-aberta', null);  
         }
       }
 
   }, 1)
-  // led17.watch((err: Error, value: number) => {
-  //   if (err) throw err;
-  //   ultimoStatusPorta = statusPorta;
-  //   statusPorta = value;
-  // });
   win = mainWindow;
 }
 
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
 
@@ -99,29 +93,8 @@ ipcMain.on('GPIO', (event, arg) => {
         win.webContents.send('fechar-modal', null);
         return;
       }
-      // win.webContents.send('porta-aberta', null);
     }, 3000);
   }
-  // setTimeout(() => {
-  //   led4.write(PortaStatus.OFF);
-  //   if (statusPorta == PortaStatus.OFF) {
-  //     win.webContents.send('fechar-modal', null);
-  //     return;
-  //   } else {
-  //     if (ultimoStatusPorta == PortaStatus.OFF) {
-  //       if (statusPorta == PortaStatus.ON) {
-         
-  //       }
-  //     }    
-  //   }
-  //   // const interval = setInterval(() => {
-  //   //   if (statusPorta == PortaStatus.OFF) {
-  //   //     clearInterval(interval);
-  //   //     win.webContents.send('fechar-modal', null);
-  //   //     win.webContents.send('porta-fechada', null);
-  //   //   }
-  //   // }, 1);
-  // });
 });
 
 ipcMain.handle('status-porta', () => statusPorta);
