@@ -7,8 +7,8 @@ enum PortaStatus {
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Gpio = require('onoff').Gpio;
-const led4 = new Gpio(4, 'out');
-const led17 = new Gpio(17, 'in', 'both');
+const eletroima = new Gpio(14, 'out');
+const porta = new Gpio(17, 'in', 'both');
 let statusPorta = PortaStatus.OFF;
 let ultimoStatusPorta = PortaStatus.OFF;
 
@@ -30,7 +30,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../index.html'));
   setInterval(() => {
       ultimoStatusPorta = statusPorta;
-      statusPorta = led17.readSync();      
+      statusPorta = porta.readSync();      
       
       quantasVezesTrocouPara1+=1;
       if (statusPorta == PortaStatus.OFF) {  
@@ -85,10 +85,10 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('GPIO', (event, arg) => {
   console.log('GPIO', arg);
-  led4.write(PortaStatus[arg]);
+  eletroima.write(PortaStatus[arg]);
   if (Number(PortaStatus[arg]) == PortaStatus.ON) {
     setTimeout(() => {
-      led4.write(PortaStatus.OFF);
+      eletroima.write(PortaStatus.OFF);
       if (statusPorta == PortaStatus.OFF) {
         win.webContents.send('fechar-modal', null);
         return;
